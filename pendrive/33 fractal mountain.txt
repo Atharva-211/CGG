@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include <graphics.h>
+#include <stdlib.h>
+#include <time.h>
+
+// Function to generate random values within a range
+int randomRange(int min, int max)
+{
+    return min + rand() % (max - min + 1);
+}
+
+// Function to draw a fractal mountain
+void drawMountain(int x1, int y1, int x2, int y2, int n, int h)
+{
+    int xm, ym, offset;
+    if (n == 0)
+    {
+        line(x1, y1, x2, y2);
+    }
+    else
+    {
+        xm = (x1 + x2) / 2;
+        ym = (y1 + y2) / 2;
+
+        offset = randomRange(-h, h);
+        ym += offset;
+
+        drawMountain(x1, y1, xm, ym, n - 1, h / 2);
+        drawMountain(xm, ym, x2, y2, n - 1, h / 2);
+    }
+}
+//Mountain Fractal pt 2
+int main()
+{
+    int gd, gm, x1, y1, x2, y2, h, n;
+    gd = DETECT;
+    initgraph(&gd, &gm, "c:\\turboc3\\bgi");
+
+    printf("Enter the number of iterations: ");
+    scanf("%d", &n);
+
+    srand(time(NULL));
+
+    x1 = 0;
+    y1 = getmaxy() / 2;
+    x2 = getmaxx();
+    y2 = getmaxy() / 2;
+    h = getmaxy() / 3;
+
+    drawMountain(x1, y1, x2, y2, n, h);
+
+    delay(5000);
+    closegraph();
+
+    return 0;
+}

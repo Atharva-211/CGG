@@ -1,0 +1,93 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <graphics.h>
+
+#define PI 3.14159265
+
+// Bresenham's line drawing algorithm
+void drawLine(int x1, int y1, int x2, int y2) {
+    int dx = abs(x2 - x1), sx = x1 < x2 ? 1 : -1;
+    int dy = -abs(y2 - y1), sy = y1 < y2 ? 1 : -1;
+    int err = dx + dy, e2;
+
+    while (true) {
+        putpixel(x1, y1, WHITE); // Set the pixel at (x1, y1)
+        if (x1 == x2 && y1 == y2) break;
+        e2 = 2 * err;
+        if (e2 >= dy) {
+            err += dy;
+            x1 += sx;
+        }
+        if (e2 <= dx) {
+            err += dx;
+            y1 += sy;
+        }
+    }
+}
+
+// Bresenham's circle drawing algorithm
+void drawCircle(int xc, int yc, int r) {
+    int x = 0, y = r;
+    int d = 3 - 2 * r;
+    while (y >= x) {
+        putpixel(xc + x, yc + y, WHITE);
+        putpixel(xc - x, yc + y, WHITE);
+        putpixel(xc + x, yc - y, WHITE);
+        putpixel(xc - x, yc - y, WHITE);
+        putpixel(xc + y, yc + x, WHITE);
+        putpixel(xc - y, yc + x, WHITE);
+        putpixel(xc + y, yc - x, WHITE);
+        putpixel(xc - y, yc - x, WHITE);
+        x++;
+        if (d > 0) {
+            y--;
+            d = d + 4 * (x - y) + 10;
+        } else {
+            d = d + 4 * x + 6;
+        }
+    }
+}
+
+int main() {
+    int gd = DETECT, gm;
+    initgraph(&gd, &gm, "C:\\TURBOC3\\BGI");
+
+    // Pendulum properties
+    int pivotX = 320, pivotY = 100; // Pivot point coordinates
+    int rodLength = 200;            // Length of the pendulum rod
+    int bobSize = 10;               // Size of the bob (pendulum weight)
+    float angle = 0;                // Initial angle of the pendulum (in degrees)
+    float angularVelocity = 1;      // Angular velocity (degrees per frame)
+    int centerX, centerY;           // Coordinates of the bob
+
+    while (!kbhit()) { // Continue until a key is pressed
+        // Clear screen
+        cleardevice();
+
+        // Calculate new position of the bob
+        centerX = pivotX + rodLength * sin(angle * PI / 180);
+        centerY = pivotY + rodLength * cos(angle * PI / 180);
+
+        // Draw pendulum rod
+        drawLine(pivotX, pivotY, centerX, centerY);
+
+        // Draw bob
+        drawCircle(centerX, centerY, bobSize);
+
+        // Increment angle for next frame
+        angle += angularVelocity;
+
+        // Reverse direction if the pendulum reaches maximum angle
+        if (angle >= 60 || angle <= -60) {
+            angularVelocity = -angularVelocity;
+        }
+
+        // Delay to control animation speed
+        delay(50);
+    }
+
+    // Close graphics
+    closegraph();
+    return 0;
+}

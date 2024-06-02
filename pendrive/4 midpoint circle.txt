@@ -1,0 +1,60 @@
+#include <graphics.h>  // Include the graphics library
+#include <math.h>
+
+// Function to draw a circle using Mid-Point Circle drawing algorithm
+void drawCircleMidPoint(int xc, int yc, int r) {
+    int x = r, y = 0;
+    int p = 1 - r;
+
+    // Plot the first point
+    putpixel(xc + x, yc + y, WHITE);
+    putpixel(xc - x, yc + y, WHITE);
+    putpixel(xc + x, yc - y, WHITE);
+    putpixel(xc - x, yc - y, WHITE);
+    putpixel(xc + y, yc + x, WHITE);
+    putpixel(xc - y, yc + x, WHITE);
+    putpixel(xc + y, yc - x, WHITE);
+    putpixel(xc - y, yc - x, WHITE);
+
+    while (x > y) {
+        y++;
+
+        if (p <= 0)
+            p = p + 2*y + 1;
+        else {
+            x--;
+            p = p + 2*y - 2*x + 1;
+        }
+
+        // Plot the points in all eight octants
+        if (x < y)
+            break;
+        putpixel(xc + x, yc + y, WHITE);
+        putpixel(xc - x, yc + y, WHITE);
+        putpixel(xc + x, yc - y, WHITE);
+        putpixel(xc - x, yc - y, WHITE);
+        putpixel(xc + y, yc + x, WHITE);
+        putpixel(xc - y, yc + x, WHITE);
+        putpixel(xc + y, yc - x, WHITE);
+        putpixel(xc - y, yc - x, WHITE);
+    }
+}
+
+int main() {
+    // Initialize the graphics mode and driver
+    int gd = DETECT, gm;
+    initgraph(&gd, &gm, "C:\\TDM-GCC-64\\lib\\");  // Adjust the path according to your setup
+
+    // Set the color of the circle
+    setcolor(WHITE);
+
+    // Draw a circle at center (200, 200) with radius 100 using Mid-Point Circle drawing algorithm
+    drawCircleMidPoint(200, 200, 50);
+
+    // Wait for the user to press a key
+    getch();
+
+    // Close the graphics mode and clean up
+    closegraph();
+    return 0;
+}

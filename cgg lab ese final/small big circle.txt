@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <graphics.h>
+
+#define PI 3.14159265
+
+// Bresenham's circle drawing algorithm
+void drawCircle(int xc, int yc, int r) {
+    int x = 0, y = r;
+    int d = 3 - 2 * r;
+    while (y >= x) {
+        putpixel(xc + x, yc + y, WHITE);
+        putpixel(xc - x, yc + y, WHITE);
+        putpixel(xc + x, yc - y, WHITE);
+        putpixel(xc - x, yc - y, WHITE);
+        putpixel(xc + y, yc + x, WHITE);
+        putpixel(xc - y, yc + x, WHITE);
+        putpixel(xc + y, yc - x, WHITE);
+        putpixel(xc - y, yc - x, WHITE);
+        x++;
+        if (d > 0) {
+            y--;
+            d = d + 4 * (x - y) + 10;
+        } else {
+            d = d + 4 * x + 6;
+        }
+    }
+}
+
+int main() {
+    int gd = DETECT, gm;
+    initgraph(&gd, &gm, "C:\\TURBOC3\\BGI");
+
+    // Big Circle properties
+    int bigCenterX = 320, bigCenterY = 240; // Center coordinates of the big circle
+    int bigRadius = 100;                    // Radius of the big circle
+
+    // Small Circle properties
+    int smallRadius = 20;                   // Radius of the small circle
+    double angle = 0;                       // Initial angle for small circle's position
+    double smallAngle = 0;                  // Initial angle for small circle's rotation
+
+    while (!kbhit()) { // Continue until a key is pressed
+        // Clear screen
+        cleardevice();
+
+        // Calculate the position of the small circle
+        int smallCenterX = bigCenterX + bigRadius * cos(angle * PI / 180);
+        int smallCenterY = bigCenterY + bigRadius * sin(angle * PI / 180);
+
+        // Calculate the position of the small circle's rotating center
+        int smallRotateCenterX = smallCenterX + smallRadius * cos(smallAngle * PI / 180);
+        int smallRotateCenterY = smallCenterY + smallRadius * sin(smallAngle * PI / 180);
+
+        // Draw big circle using Bresenham's algorithm
+        drawCircle(bigCenterX, bigCenterY, bigRadius);
+
+        // Draw small circle using Bresenham's algorithm
+        drawCircle(smallRotateCenterX, smallRotateCenterY, smallRadius);
+
+        // Increment angles for next frame
+        angle += 1;        // Adjust the speed at which the small circle moves around the big circle
+        smallAngle += 2;   // Adjust the speed at which the small circle rotates within the big circle
+
+        // Delay to control animation speed
+        delay(50);
+    }
+
+    // Close graphics
+    closegraph();
+    return 0;
+}

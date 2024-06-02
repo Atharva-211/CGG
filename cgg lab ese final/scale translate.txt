@@ -1,0 +1,81 @@
+#include <graphics.h>
+#include <conio.h>
+#include <math.h>
+
+// Function to draw a triangle
+void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3) {
+    line(x1, y1, x2, y2);
+    line(x2, y2, x3, y3);
+    line(x3, y3, x1, y1);
+}
+
+// Function to scale a triangle
+void scaleTriangle(int &x1, int &y1, int &x2, int &y2, int &x3, int &y3, float sx, float sy) {
+    x1 = x1 * sx;
+    y1 = y1 * sy;
+    x2 = x2 * sx;
+    y2 = y2 * sy;
+    x3 = x3 * sx;
+    y3 = y3 * sy;
+}
+
+// Function to translate a triangle
+void translateTriangle(int &x1, int &y1, int &x2, int &y2, int &x3, int &y3, int tx, int ty) {
+    x1 = x1 + tx;
+    y1 = y1 + ty;
+    x2 = x2 + tx;
+    y2 = y2 + ty;
+    x3 = x3 + tx;
+    y3 = y3 + ty;
+}
+
+int main() {
+    int gd = DETECT, gm;
+    initgraph(&gd, &gm, "C:\\TurboC3\\BGI");
+
+    // Original triangle coordinates
+    int x1 = 100, y1 = 200;
+    int x2 = 200, y2 = 100;
+    int x3 = 300, y3 = 200;
+
+    // Draw the original triangle
+    setcolor(WHITE);
+    drawTriangle(x1, y1, x2, y2, x3, y3);
+    outtextxy(50, 50, "Original Triangle");
+
+    // Scaling factor
+    float sx = 1.5, sy = 1.5;
+
+    // Scale the triangle
+    int scaledX1 = x1, scaledY1 = y1;
+    int scaledX2 = x2, scaledY2 = y2;
+    int scaledX3 = x3, scaledY3 = y3;
+    scaleTriangle(scaledX1, scaledY1, scaledX2, scaledY2, scaledX3, scaledY3, sx, sy);
+
+    // Draw the scaled triangle
+    setcolor(GREEN);
+    drawTriangle(scaledX1, scaledY1, scaledX2, scaledY2, scaledX3, scaledY3);
+    outtextxy(50, 70, "Scaled Triangle");
+
+    // Translation values
+    int tx = 50, ty = 50;
+
+    // Translate the original triangle
+    int translatedX1 = x1, translatedY1 = y1;
+    int translatedX2 = x2, translatedY2 = y2;
+    int translatedX3 = x3, translatedY3 = y3;
+    translateTriangle(translatedX1, translatedY1, translatedX2, translatedY2, translatedX3, translatedY3, tx, ty);
+
+    // Draw the translated triangle
+    setcolor(RED);
+    drawTriangle(translatedX1, translatedY1, translatedX2, translatedY2, translatedX3, translatedY3);
+    outtextxy(50, 90, "Translated Triangle");
+
+    // Wait for a key press
+    getch();
+
+    // Close the graphics mode
+    closegraph();
+
+    return 0;
+}

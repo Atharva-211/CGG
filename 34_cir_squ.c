@@ -1,0 +1,129 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <graphics.h>
+
+#define PI 3.14159265
+
+// Bresenham's line drawing algorithm
+void drawLine(int x1, int y1, int x2, int y2) {
+    int dx = abs(x2 - x1), sx = x1 < x2 ? 1 : -1;
+    int dy = -abs(y2 - y1), sy = y1 < y2 ? 1 : -1;
+    int err = dx + dy, e2;
+
+    while (!kbhit()) {
+        putpixel(x1, y1, WHITE); // Set the pixel at (x1, y1)
+        if (x1 == x2 && y1 == y2) break;
+        e2 = 2 * err;
+        if (e2 >= dy) {
+            err += dy;
+            x1 += sx;
+        }
+        if (e2 <= dx) {
+            err += dx;
+            y1 += sy;
+        }
+    }
+}
+
+// Bresenham's circle drawing algorithm
+void drawCircle(int xc, int yc, int r) {
+    int x = 0, y = r;
+    int d = 3 - 2 * r;
+    while (y >= x) {
+        putpixel(xc + x, yc + y, WHITE);
+        putpixel(xc - x, yc + y, WHITE);
+        putpixel(xc + x, yc - y, WHITE);
+        putpixel(xc - x, yc - y, WHITE);
+        putpixel(xc + y, yc + x, WHITE);
+        putpixel(xc - y, yc + x, WHITE);
+        putpixel(xc + y, yc - x, WHITE);
+        putpixel(xc - y, yc - x, WHITE);
+        x++;
+        if (d > 0) {
+            y--;
+            d = d + 4 * (x - y) + 10;
+        } else {
+            d = d + 4 * x + 6;
+        }
+    }
+}
+
+int main() {
+    int gd = DETECT, gm;
+        // Big Rectangle properties
+    int bigLeft = 220, bigTop = 140;       // Top-left corner coordinates of the big rectangle
+    int bigRight = 420, bigBottom = 340;   // Bottom-right corner coordinates of the big rectangle
+
+    // Small Circle properties
+    int smallRadius = 20;                   // Radius of the small circle
+    double angle = 0;                       // Initial angle for small circle's position
+    int direction = 1;                      // Initial direction of movement (1: right, 2: down, 3: left, 4: up)
+    int x, y;                               // Temporary variables for small circle's center
+    initgraph(&gd, &gm, "C:\\TURBOC3\\BGI");
+
+
+
+    while (!kbhit()) { // Continue until a key is pressed
+        // Clear screen
+        cleardevice();
+
+        // Draw big rectangle using Bresenham's line algorithm
+        drawLine(bigLeft, bigTop, bigRight, bigTop); // Top edge
+        drawLine(bigRight, bigTop, bigRight, bigBottom); // Right edge
+        drawLine(bigRight, bigBottom, bigLeft, bigBottom); // Bottom edge
+        drawLine(bigLeft, bigBottom, bigLeft, bigTop); // Left edge
+
+        // Calculate the position of the small circle
+        switch (direction) {
+            case 1: // Right
+                x = bigLeft + smallRadius + (int)((bigRight - bigLeft - 2 * smallRadius) * (angle / 90));
+                y = bigTop + smallRadius;
+                if (x > bigRight - smallRadius) {
+                    x = bigRight - smallRadius;
+                    direction = 2; // Change direction at corners
+                }
+                break;
+            case 2: // Down
+                x = bigRight - smallRadius;
+                y = bigTop + smallRadius + (int)((bigBottom - bigTop - 2 * smallRadius) * ((angle - 90) / 90));
+                if (y > bigBottom - smallRadius) {
+                    y = bigBottom - smallRadius;
+                    direction = 3; // Change direction at corners
+                }
+                break;
+            case 3: // Left
+                x = bigRight - smallRadius - (int)((bigRight - bigLeft - 2 * smallRadius) * ((angle - 180) / 90));
+                y = bigBottom - smallRadius;
+                if (x < bigLeft + smallRadius) {
+                    x = bigLeft + smallRadius;
+                    direction = 4; // Change direction at corners
+                }
+                break;
+            case 4: // Up
+                x = bigLeft + smallRadius;
+                y = bigBottom - smallRadius - (int)((bigBottom - bigTop - 2 * smallRadius) * ((angle - 270) / 90));
+                if (y < bigTop + smallRadius) {
+                    y = bigTop + smallRadius;
+                    direction = 1; // Change direction at corners
+                }
+                break;
+        }
+
+        // Draw small circle using Bresenham's algorithm
+        drawCircle(x, y, smallRadius);
+
+        // Move along the edges of the rectangle
+        angle += 1;
+        if (angle >= 360) {
+            angle = 0;
+        }
+
+        // Delay to control animation speed
+        delay(50);
+    }
+
+    // Close graphics
+    closegraph();
+    return 0;
+}

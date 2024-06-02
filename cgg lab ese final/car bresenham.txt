@@ -1,0 +1,65 @@
+#include <graphics.h>
+#include <conio.h>
+#include <stdio.h>
+#include<math.h>
+
+void drawLineBresenham(int x1, int y1, int x2, int y2) {
+    int dx = abs(x2 - x1), dy = abs(y2 - y1);
+    int p = 2 * dy - dx;
+    int twoDy = 2 * dy, twoDyDx = 2 * (dy - dx);
+    int x, y, xEnd;
+
+    if (x1 > x2) {
+        x = x2;
+        y = y2;
+        xEnd = x1;
+    } else {
+        x = x1;
+        y = y1;
+        xEnd = x2;
+    }
+
+    putpixel(x, y, WHITE);
+
+    while (x < xEnd) {
+        x++;
+        if (p < 0)
+            p += twoDy;
+        else {
+            y++;
+            p += twoDyDx;
+        }
+        putpixel(x, y, WHITE);
+    }
+}
+
+void drawCar(int xc, int yc) {
+    // Draw bottom part of the car
+    //drawLineBresenham(xc - 100, yc, xc + 100, yc);
+    //drawLineBresenham(xc - 100, yc, xc - 100, yc - 50);
+    //drawLineBresenham(xc + 100, yc, xc + 100, yc - 50);
+    //drawLineBresenham(xc - 100, yc - 50, xc + 100, yc - 50);
+    drawLineBresenham(100, 100, 300,300);
+
+    // Draw upper part of the car
+    //drawLineBresenham(xc - 60, yc - 50, xc - 40, yc - 80);
+    //drawLineBresenham(xc - 40, yc - 80, xc + 40, yc - 80);
+    //drawLineBresenham(xc + 40, yc - 80, xc + 60, yc - 50);
+    //drawLineBresenham(xc - 60, yc - 50, xc + 60, yc - 50);
+
+    // Draw wheels
+    //circle(xc - 60, yc, 20);
+    //circle(xc + 60, yc, 20);
+}
+
+int main() {
+    int gd = DETECT, gm;
+    initgraph(&gd, &gm, "C:\\Turboc3\\BGI");
+
+    int xc = 250, yc = 250;
+    drawCar(xc, yc);
+
+    getch();
+    closegraph();
+    return 0;
+}

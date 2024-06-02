@@ -1,0 +1,77 @@
+#include <graphics.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+// Function to draw a triangle
+void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, int color) {
+    setcolor(color);
+    line(x1, y1, x2, y2);
+    line(x2, y2, x3, y3);
+    line(x3, y3, x1, y1);
+}
+
+// Function to translate a triangle
+void translateTriangle(int &x1, int &y1, int &x2, int &y2, int &x3, int &y3, int dx, int dy) {
+    x1 += dx;
+    y1 += dy;
+    x2 += dx;
+    y2 += dy;
+    x3 += dx;
+    y3 += dy;
+}
+
+int main() {
+    int gd = DETECT, gm;
+    initgraph(&gd, &gm, NULL);
+
+    // Original triangle vertices
+    int x1 = 50, y1 = 50;
+    int x2 = 100, y2 = 150;
+    int x3 = 0, y3 = 150;
+
+    // Draw original triangle
+    drawTriangle(x1, y1, x2, y2, x3, y3, WHITE);
+    delay(1000); // Delay to show the original triangle
+
+    // Translation values
+    int dx1 = 50, dy1 = 50;
+    int dx2 = 100, dy2 = 100;
+
+    // First translation
+    int x1_t1 = x1, y1_t1 = y1;
+    int x2_t1 = x2, y2_t1 = y2;
+    int x3_t1 = x3, y3_t1 = y3;
+    translateTriangle(x1_t1, y1_t1, x2_t1, y2_t1, x3_t1, y3_t1, dx1, dy1);
+
+    // Draw triangle after first translation (red)
+    drawTriangle(x1_t1, y1_t1, x2_t1, y2_t1, x3_t1, y3_t1, RED);
+    delay(1000); // Delay to show the first translation
+
+    // Second translation
+    int x1_t2 = x1_t1, y1_t2 = y1_t1;
+    int x2_t2 = x2_t1, y2_t2 = y2_t1;
+    int x3_t2 = x3_t1, y3_t2 = y3_t1;
+    translateTriangle(x1_t2, y1_t2, x2_t2, y2_t2, x3_t2, y3_t2, dx2, dy2);
+
+    // Draw triangle after second translation (blue)
+    drawTriangle(x1_t2, y1_t2, x2_t2, y2_t2, x3_t2, y3_t2, BLUE);
+    delay(1000); // Delay to show the second translation
+
+    // Translate the original triangle by the sum of both translation values
+    int x1_combined = x1, y1_combined = y1;
+    int x2_combined = x2, y2_combined = y2;
+    int x3_combined = x3, y3_combined = y3;
+    translateTriangle(x1_combined, y1_combined, x2_combined, y2_combined, x3_combined, y3_combined, dx1 + dx2, dy1 + dy2);
+
+    // Draw the translated original triangle (green)
+    drawTriangle(x1_combined, y1_combined, x2_combined, y2_combined, x3_combined, y3_combined, GREEN);
+    delay(1000); // Delay to show the translated original triangle
+
+    // Wait for a key press
+    getch();
+
+    // Close the graphics mode
+    closegraph();
+
+    return 0;
+}

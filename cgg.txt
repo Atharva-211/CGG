@@ -1,0 +1,2936 @@
+COMPUTER GRAPHICS
+List of Practice CG Assignments
+
+1. Write a Program to implement DDA Line drawing algorithm.
+
+		#include <graphics.h>  // Include the graphics library
+
+		// Function to draw a line using DDA algorithm
+		void drawLineDDA(int x1, int y1, int x2, int y2) {
+			int dx = x2 - x1;
+			int dy = y2 - y1;
+
+			int steps = abs(dx) > abs(dy) ? abs(dx) : abs(dy);
+
+			float xIncrement = (float)dx / steps;
+			float yIncrement = (float)dy / steps;
+
+			float x = x1;
+			float y = y1;
+			int i;
+			for (i = 0; i <= steps; i++) {
+			putpixel(x, y, WHITE);
+			x += xIncrement;
+			y += yIncrement;
+			}
+		}
+
+		int main() {
+			// Initialize the graphics mode and driver
+			int gd = DETECT, gm;
+			initgraph(&gd, &gm, "C:\\TURBOC3\\BGI");  // Adjust the path according to your setup
+
+			// Set the color of the line
+			setcolor(WHITE);
+
+			// Draw a line from (100, 100) to (300, 200) using DDA algorithm
+			drawLineDDA(100, 100, 300, 200);
+
+			// Wait for the user to press a key
+			getch();
+
+			// Close the graphics mode and clean up
+			closegraph();
+			return 0;
+		}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+2. Write a Program to implement Bresenham’s Line drawing algorithm.
+
+		#include <graphics.h>
+		#include <math.h>
+
+		// Function to draw a line using Bresenham's line drawing algorithm
+		void drawLineBresenham(int x1, int y1, int x2, int y2) {
+			int dx = x2 - x1;
+			int dy = y2 - y1;
+			int x = x1, y = y1;
+
+			int sx = dx > 0 ? 1 : -1;
+			int sy = dy > 0 ? 1 : -1;
+
+			dx = abs(dx);
+			dy = abs(dy);
+
+			if (dx > dy) {
+				int p = 2 * dy - dx;
+				while (x != x2) {
+					putpixel(x, y, WHITE);
+					x += sx;
+					if (p < 0)
+						p += 2 * dy;
+					else {
+						y += sy;
+						p += 2 * (dy - dx);
+					}
+				}
+			} else {
+				int p = 2 * dx - dy;
+				while (y != y2) {
+					putpixel(x, y, WHITE);
+					y += sy;
+					if (p < 0)
+						p += 2 * dx;
+					else {
+						x += sx;
+						p += 2 * (dx - dy);
+					}
+				}
+			}
+			putpixel(x, y, WHITE);
+		}
+
+		int main() {
+			// Initialize the graphics mode and driver
+			int gd = DETECT, gm;
+			initgraph(&gd, &gm, "C:\\TURBOC3\\BGI");  // Adjust the path according to your setup
+
+			// Set the color of the line
+			setcolor(WHITE);
+
+			// Draw a line from (100, 100) to (300, 200) using Bresenham's line drawing algorithm
+			drawLineBresenham(100, 100, 300, 200);
+
+			// Wait for the user to press a key
+			getch();
+
+			// Close the graphics mode and clean up
+			closegraph();
+			return 0;
+		}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+3. Write a Program to implement Bresenham’s Circle drawing algorithm.
+
+		#include <graphics.h>  // Include the graphics library
+		#include <math.h>
+
+		// Function to draw a circle using Bresenham's circle drawing algorithm
+		void drawCircleBresenham(int xc, int yc, int r) {
+			int x = 0, y = r;
+			int d = 3 - 2 * r;
+
+			while (x <= y) {
+				putpixel(xc + x, yc + y, WHITE);
+				putpixel(xc - x, yc + y, WHITE);
+				putpixel(xc + x, yc - y, WHITE);
+				putpixel(xc - x, yc - y, WHITE);
+				putpixel(xc + y, yc + x, WHITE);
+				putpixel(xc - y, yc + x, WHITE);
+				putpixel(xc + y, yc - x, WHITE);
+				putpixel(xc - y, yc - x, WHITE);
+
+				if (d < 0)
+					d += 4 * x + 6;
+				else {
+					d += 4 * (x - y) + 10;
+					y--;
+				}
+				x++;
+			}
+		}
+
+		int main() {
+			// Initialize the graphics mode and driver
+			int gd = DETECT, gm;
+			initgraph(&gd, &gm, "C:\\TURBOC3\\BGI");  // Adjust the path according to your setup
+
+			// Set the color of the circle
+			setcolor(WHITE);
+
+			// Draw a circle at center (200, 200) with radius 100 using Bresenham's circle drawing algorithm
+			drawCircleBresenham(200, 200, 100);
+
+			// Wait for the user to press a key
+			getch();
+
+			// Close the graphics mode and clean up
+			closegraph();
+			return 0;
+		}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+4. Write a Program to implement Mid-point Circle drawing algorithm.
+
+		#include <graphics.h>  // Include the graphics library
+		#include <math.h>
+
+		// Function to draw a circle using Mid-Point Circle drawing algorithm
+		void drawCircleMidPoint(int xc, int yc, int r) {
+			int x = r, y = 0;
+			int p = 1 - r;
+
+			// Plot the first point
+			putpixel(xc + x, yc + y, WHITE);
+			putpixel(xc - x, yc + y, WHITE);
+			putpixel(xc + x, yc - y, WHITE);
+			putpixel(xc - x, yc - y, WHITE);
+			putpixel(xc + y, yc + x, WHITE);
+			putpixel(xc - y, yc + x, WHITE);
+			putpixel(xc + y, yc - x, WHITE);
+			putpixel(xc - y, yc - x, WHITE);
+
+			while (x > y) {
+				y++;
+
+				if (p <= 0)
+					p = p + 2*y + 1;
+				else {
+					x--;
+					p = p + 2*y - 2*x + 1;
+				}
+
+				// Plot the points in all eight octants
+				if (x < y)
+					break;
+				putpixel(xc + x, yc + y, WHITE);
+				putpixel(xc - x, yc + y, WHITE);
+				putpixel(xc + x, yc - y, WHITE);
+				putpixel(xc - x, yc - y, WHITE);
+				putpixel(xc + y, yc + x, WHITE);
+				putpixel(xc - y, yc + x, WHITE);
+				putpixel(xc + y, yc - x, WHITE);
+				putpixel(xc - y, yc - x, WHITE);
+			}
+		}
+
+		int main() {
+			// Initialize the graphics mode and driver
+			int gd = DETECT, gm;
+			initgraph(&gd, &gm, "C:\\TURBOC3\\BGI");  // Adjust the path according to your setup
+
+			// Set the color of the circle
+			setcolor(WHITE);
+
+			// Draw a circle at center (200, 200) with radius 100 using Mid-Point Circle drawing algorithm
+			drawCircleMidPoint(200, 200, 50);
+
+			// Wait for the user to press a key
+			getch();
+
+			// Close the graphics mode and clean up
+			closegraph();
+			return 0;
+		}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+5. Write a Program to draw a face of Teddy bear using midpoint algorithm only.
+
+		#include <graphics.h>
+		#include <conio.h>
+		#include <stdio.h>
+		#include <math.h>
+
+		void drawCircleMidpoint(int xc, int yc, int r) {
+			int x = 0, y = r;
+			int p = 1 - r;
+
+			while (x <= y) {
+				putpixel(xc + x, yc + y, WHITE);
+				putpixel(xc - x, yc + y, WHITE);
+				putpixel(xc + x, yc - y, WHITE);
+				putpixel(xc - x, yc - y, WHITE);
+				putpixel(xc + y, yc + x, WHITE);
+				putpixel(xc - y, yc + x, WHITE);
+				putpixel(xc + y, yc - x, WHITE);
+				putpixel(xc - y, yc - x, WHITE);
+
+				x++;
+				if (p < 0) {
+					p += 2 * x + 1;
+				} else {
+					y--;
+					p += 2 * (x - y) + 1;
+				}
+			}
+		}
+
+		void drawTeddyBearFace(int xc, int yc) {
+			// Draw face
+			drawCircleMidpoint(xc, yc, 100);
+			// Draw left ear
+			drawCircleMidpoint(xc - 70, yc - 70, 30);
+			// Draw right ear
+			drawCircleMidpoint(xc + 70, yc - 70, 30);
+			// Draw left eye
+			drawCircleMidpoint(xc - 40, yc - 20, 10);
+			// Draw right eye
+			drawCircleMidpoint(xc + 40, yc - 20, 10);
+			// Draw nose
+			drawCircleMidpoint(xc, yc + 20, 10);
+		}
+
+		int main() {
+			int gd = DETECT, gm;
+			int xc = 250, yc = 250;  // Move declaration here
+			initgraph(&gd, &gm, "C:\\Turboc3\\BGI");
+
+			drawTeddyBearFace(xc, yc);
+
+			getch();
+			closegraph();
+			return 0;
+		}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+6. Write a Program to draw a car using Bresenham’s algorithm only.
+
+		#include <graphics.h>
+		#include <conio.h>
+		#include <stdio.h>
+		#include <stdlib.h>
+
+		// Function to draw a line using Bresenham's algorithm
+		void drawLineBresenham(int x0, int y0, int x1, int y1) {
+			int dx = abs(x1 - x0);
+			int dy = abs(y1 - y0);
+			int sx = x0 < x1 ? 1 : -1;
+			int sy = y0 < y1 ? 1 : -1;
+			int err = dx - dy;
+			int e2;
+			
+			while (1) {
+				putpixel(x0, y0, WHITE);
+				if (x0 == x1 && y0 == y1) break;
+				e2 = 2 * err;
+				if (e2 > -dy) {
+					err -= dy;
+					x0 += sx;
+				}
+				if (e2 < dx) {
+					err += dx;
+					y0 += sy;
+				}
+			}
+		}
+
+		// Function to draw a circle using Bresenham's algorithm
+		void drawCircleBresenham(int xc, int yc, int r) {
+			int x = 0;
+			int y = r;
+			int d = 3 - 2 * r;
+
+			while (y >= x) {
+				putpixel(xc + x, yc + y, WHITE);
+				putpixel(xc - x, yc + y, WHITE);
+				putpixel(xc + x, yc - y, WHITE);
+				putpixel(xc - x, yc - y, WHITE);
+				putpixel(xc + y, yc + x, WHITE);
+				putpixel(xc - y, yc + x, WHITE);
+				putpixel(xc + y, yc - x, WHITE);
+				putpixel(xc - y, yc - x, WHITE);
+
+				x++;
+
+				if (d > 0) {
+					y--;
+					d = d + 4 * (x - y) + 10;
+				} else {
+					d = d + 4 * x + 6;
+				}
+			}
+		}
+
+		int main() {
+			int gd = DETECT, gm;
+			initgraph(&gd, &gm, "C:\\Turboc3\\BGI");
+
+			// Draw the car body
+			drawLineBresenham(100, 300, 400, 300); // bottom line
+			drawLineBresenham(100, 300, 100, 250); // left vertical line
+			drawLineBresenham(100, 250, 150, 200); // left diagonal line
+			drawLineBresenham(150, 200, 350, 200); // top horizontal line
+			drawLineBresenham(350, 200, 400, 250); // right diagonal line
+			drawLineBresenham(400, 250, 400, 300); // right vertical line
+
+			// Draw the windows
+			drawLineBresenham(175, 200, 175, 250); // left window left vertical
+			drawLineBresenham(175, 200, 250, 200); // left window top horizontal
+			drawLineBresenham(250, 200, 250, 250); // left window right vertical
+			drawLineBresenham(175, 250, 250, 250); // left window bottom horizontal
+
+			drawLineBresenham(275, 200, 275, 250); // right window left vertical
+			drawLineBresenham(275, 200, 350, 200); // right window top horizontal
+			drawLineBresenham(350, 200, 350, 250); // right window right vertical
+			drawLineBresenham(275, 250, 350, 250); // right window bottom horizontal
+
+			// Draw the bonnet
+			drawLineBresenham(100, 250, 50, 250); // bonnet top horizontal line
+			drawLineBresenham(50, 250, 50, 300);  // bonnet left vertical line
+			drawLineBresenham(50, 300, 100, 300); // bonnet bottom horizontal line
+
+			// Draw the car wheels
+			drawCircleBresenham(150, 325, 25); // left wheel
+			drawCircleBresenham(350, 325, 25); // right wheel
+
+			getch();
+			closegraph();
+
+			return 0;
+		}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+7. Write a Program to implement Flood fill algorithm for a convex polygon. Draw polygon
+edges by DDA / Bresenham line algorithm.
+8. Write a Program to implement Boundary fill algorithm for a convex polygon. Draw
+polygon edges by DDA / Bresenham line algorithm.
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+9. Write a Program to implement Fence fill algorithm for a concave polygon. Draw polygon
+edges by DDA / Bresenham line algorithm.
+
+		#include <graphics.h>
+		#include <stdio.h>
+		#include <math.h>
+
+		// Function to draw a line using DDA algorithm
+		void drawLineDDA(int X1, int Y1, int X2, int Y2) {
+			int dx = X2 - X1;
+			int dy = Y2 - Y1;
+			int steps = abs(dx) > abs(dy) ? abs(dx) : abs(dy);
+
+			float Xinc = dx / (float)steps;
+			float Yinc = dy / (float)steps;
+
+			float X = X1;
+			float Y = Y1;
+			int i;
+			for ( i = 0; i <= steps; i++) {
+				putpixel(X, Y, WHITE);
+				X += Xinc;
+				Y += Yinc;
+				delay(10);
+			}
+		}
+
+		// Function to implement Fence Fill algorithm for concave polygons
+		void fenceFillConcave(int x[], int y[], int n, int fill_color, int boundary_color) {
+			// Draw the polygon boundary
+			int i, minX, minY, maxX, maxY;
+			int j,k;
+			for ( i = 0; i < n; i++) {
+			drawLineDDA(x[i], y[i], x[(i + 1) % n], y[(i + 1) % n]);
+			}
+
+			minX = x[0], maxX = x[0];
+			minY = y[0], maxY = y[0];
+
+			// Find the minimum and maximum coordinates
+			for ( i = 1; i < n; i++) {
+			if (x[i] < minX) minX = x[i];
+			if (x[i] > maxX) maxX = x[i];
+			if (y[i] < minY) minY = y[i];
+			if (y[i] > maxY) maxY = y[i];
+			}
+
+			// Perform the fence fill algorithm
+			for ( i = minY + 1; i < maxY; i++) {
+			int intersectionPoints[1000];
+			int count = 0;
+
+			for ( j = 0; j < n; j++) {
+				int x1 = x[j];
+				int y1 = y[j];
+				int x2 = x[(j + 1) % n];
+				int y2 = y[(j + 1) % n];
+
+				if ((y1 <= i && i < y2) || (y2 <= i && i < y1)) {
+				int intersectX = x1 + (float)(i - y1) * (x2 - x1) / (y2 - y1);
+				intersectionPoints[count++] = intersectX;
+				}
+			}
+
+			// Sort the intersection points in ascending order
+			for ( j = 0; j < count - 1; j++) {
+				for ( k = 0; k < count - j - 1; k++) {
+						if (intersectionPoints[k] > intersectionPoints[k + 1]) {
+							int temp = intersectionPoints[k];
+							intersectionPoints[k] = intersectionPoints[k + 1];
+							intersectionPoints[k + 1] = temp;
+						}
+					}
+				}
+
+				// Fill the scanline between intersection points
+			for ( j = 0; j < count - 1; j += 2) {
+				for ( k = intersectionPoints[j]; k < intersectionPoints[j + 1]; k++) {
+						putpixel(k, i, fill_color);
+						delay(10);
+					}
+				}
+			}
+		}
+
+		int main() {
+			int gd = DETECT, gm;
+			int n, i;
+			int *x, *y;
+			int fill_color = GREEN;
+			int boundary_color = WHITE;
+
+			initgraph(&gd, &gm, "C:\\Turboc3\\BGI"); // Adjust path as necessary
+
+			printf("Enter the number of vertices of the concave polygon: ");
+			scanf("%d", &n);
+
+			// Allocate memory for the coordinates
+			x = (int *)malloc(n * sizeof(int));
+			y = (int *)malloc(n * sizeof(int));
+
+			if (x == NULL || y == NULL) {
+				printf("Memory allocation failed\n");
+				closegraph();
+				return 1;
+			}
+
+			printf("Enter the coordinates of the vertices:\n");
+			for (i = 0; i < n; i++) {
+				printf("Vertex %d: ", i + 1);
+				scanf("%d %d", &x[i], &y[i]);
+			}
+
+			fenceFillConcave(x, y, n, fill_color, boundary_color);
+
+			getch();
+			closegraph();
+
+			// Free allocated memory
+			free(x);
+			free(y);
+
+			return 0;
+		}
+		// (100, 100)
+		// (200, 100)
+		// (150, 150)
+		// (200, 200)
+		// (100, 200)
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+10. Write a Program to implement Edge fill algorithm for a convex polygon. Draw polygon
+edges by DDA / Bresenham line algorithm.
+
+		#include <graphics.h>
+		#include <stdio.h>
+		#include <conio.h>
+		#include <dos.h>
+
+		// Function to implement Bresenham's Line Algorithm
+		void bresenhamLine(int x1, int y1, int x2, int y2) {
+			int dx, dy, p, x, y;
+			int xIncrement, yIncrement;
+
+			dx = abs(x2 - x1);
+			dy = abs(y2 - y1);
+			xIncrement = (x2 > x1) ? 1 : -1;
+			yIncrement = (y2 > y1) ? 1 : -1;
+			x = x1;
+			y = y1;
+
+			putpixel(x, y, WHITE);
+			if (dx > dy) {
+				p = 2 * dy - dx;
+				while (x != x2) {
+					x += xIncrement;
+					if (p < 0) {
+						p += 2 * dy;
+					} else {
+						y += yIncrement;
+						p += 2 * (dy - dx);
+					}
+					putpixel(x, y, WHITE);
+				}
+			} else {
+				p = 2 * dx - dy;
+				while (y != y2) {
+					y += yIncrement;
+					if (p < 0) {
+						p += 2 * dx;
+					} else {
+						x += xIncrement;
+						p += 2 * (dx - dy);
+					}
+					putpixel(x, y, WHITE);
+				}
+			}
+		}
+
+		// Function to draw a convex polygon (triangle) and its edges
+		void drawConvexPolygon(int polyX[], int polyY[]) {
+			// Draw edges of the triangle
+			bresenhamLine(polyX[0], polyY[0], polyX[1], polyY[1]);
+			bresenhamLine(polyX[1], polyY[1], polyX[2], polyY[2]);
+			bresenhamLine(polyX[2], polyY[2], polyX[0], polyY[0]);
+		}
+
+		// Edge Fill Algorithm for convex polygons
+		void edgeFill(int polyX[], int polyY[], int fillColor) {
+			int i, j;
+			int  INT_MAX ,INT_MIN;
+			int yMin = INT_MAX, yMax = INT_MIN;
+
+			// Find the minimum and maximum y-coordinates of the triangle
+			for (i = 0; i < 3; i++) {
+				if (polyY[i] < yMin) yMin = polyY[i];
+				if (polyY[i] > yMax) yMax = polyY[i];
+			}
+
+			// For each scanline, fill the pixels between the edges
+			for (i = yMin + 1; i < yMax; i++) {
+				int intersections[2];
+				int count = 0;
+
+				// Find intersections of the scanline with the edges
+				for (j = 0; j < 3; j++) {
+					int next = (j + 1) % 3;
+					if ((polyY[j] < i && polyY[next] >= i) || (polyY[next] < i && polyY[j] >= i)) {
+						intersections[count++] = polyX[j] + (i - polyY[j]) * (polyX[next] - polyX[j]) / (polyY[next] - polyY[j]);
+					}
+				}
+
+				// Sort intersections in ascending order
+				if (intersections[0] > intersections[1]) {
+					int temp = intersections[0];
+					intersections[0] = intersections[1];
+					intersections[1] = temp;
+				}
+
+				// Fill the pixels between intersections
+				for (j = intersections[0] + 1; j < intersections[1]; j++) {
+					putpixel(j, i, fillColor);
+				}
+			}
+		}
+
+		int main() {
+			int gd = DETECT, gm;
+			int polyX[] = {200, 100, 300};  // X-coordinates of triangle vertices
+			int polyY[] = {100, 300, 300};  // Y-coordinates of triangle vertices
+
+			initgraph(&gd, &gm, "C:\\TurboC3\\BGI");
+
+			// Draw the convex polygon (triangle) and its edges
+			drawConvexPolygon(polyX, polyY);
+
+			// Perform edge fill
+			edgeFill(polyX, polyY, GREEN);
+
+			// Wait for a key press
+			getch();
+
+			// Close the graphics mode
+			closegraph();
+
+			return 0;
+		}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+11. Write a Program to implement Scan line fill algorithm for a concave polygon. Draw
+polygon edges by DDA / Bresenham line algorithm.
+
+			#include<stdio.h>
+			#include<graphics.h>
+			#include<math.h>
+
+			//structure for holding 2D coordinates
+			typedef struct
+			{
+				int x;
+				int y;
+			} Point;
+
+			//structure for holding queue elements
+			typedef struct
+			{
+				int x;
+				int y;
+			} QueueElement;
+
+			//function to add an element to the queue
+			void enqueue(QueueElement queue[], int* rear, QueueElement value)
+			{
+				queue[*rear] = value;
+				(*rear)++;
+			}
+
+			//function to remove an element from the queue
+			QueueElement dequeue(QueueElement queue[], int* front)
+			{
+				QueueElement value = queue[*front];
+				(*front)++;
+				return value;
+			}
+
+			int isInside(Point seed, Point vertices[], int numVertices)
+			{
+				int i, j, c = 0;
+				for (i = 0, j = numVertices - 1; i < numVertices; j = i++)
+				{
+					if (((vertices[i].y > seed.y) != (vertices[j].y > seed.y)) &&
+							(seed.x < (vertices[j].x - vertices[i].x) * (seed.y - vertices[i].y) / (vertices[j].y - vertices[i].y) + vertices[i].x))
+						c = !c;
+				}
+				return c;
+			}
+			//function to implement DDA algorithm for line drawing
+			void DDA(Point p1, Point p2)
+			{
+				int dx = p2.x - p1.x;
+				int dy = p2.y - p1.y;
+				int i;
+				int steps = abs(dx) > abs(dy) ? abs(dx) : abs(dy);
+				float xIncrement = dx / (float) steps;
+				float yIncrement = dy / (float) steps;
+				float x = p1.x, y = p1.y;
+				for (i = 0; i < steps; i++)
+				{
+					putpixel(x, y, WHITE);
+					x += xIncrement;
+					y += yIncrement;
+				}
+			}
+
+
+
+			// Function to implement scanline filling algorithm
+			void scanFill(Point vertices[], int numVertices) {
+				int i, y, j;
+				int INT_MAX, INT_MIN;
+				int minY = INT_MAX, maxY = INT_MIN;
+				QueueElement queue[100];
+				int front = 0, rear = 0;
+				int intersects[100];
+				int numIntersects = 0;
+
+				// Find min and max Y values
+				for (i = 0; i < numVertices; i++) {
+					if (vertices[i].y < minY) {
+						minY = vertices[i].y;
+					}
+					if (vertices[i].y > maxY) {
+						maxY = vertices[i].y;
+					}
+				}
+
+				for (y = minY; y <= maxY; y++) {
+					numIntersects = 0;
+
+					for (i = 0; i < numVertices; i++) {
+						int j = (i + 1) % numVertices;
+						if ((vertices[i].y <= y && vertices[j].y > y) || (vertices[j].y <= y && vertices[i].y > y)) {
+							float x = (float)(vertices[i].x + (float)(y - vertices[i].y) / (vertices[j].y - vertices[i].y) * (vertices[j].x - vertices[i].x));
+							intersects[numIntersects++] = (int)x;
+						}
+					}
+
+					if (numIntersects > 1) {
+						// Sort the intersection points
+						for (i = 0; i < numIntersects - 1; i++) {
+							for (j = 0; j < numIntersects - i - 1; j++) {
+								if (intersects[j] > intersects[j + 1]) {
+									int temp = intersects[j];
+									intersects[j] = intersects[j + 1];
+									intersects[j + 1] = temp;
+								}
+							}
+						}
+
+						// Draw lines between pairs of intersections
+						for (i = 0; i < numIntersects; i += 2) {
+							Point startPoint;
+							Point endPoint;
+							
+							startPoint.x = intersects[i];
+							startPoint.y = y;
+							
+							endPoint.x = intersects[i + 1];
+							endPoint.y = y;
+							
+							DDA(startPoint, endPoint);
+						}
+					}
+				}
+			}
+
+			int main() {
+				int gd = DETECT, gm;
+				int numVertices, i;
+				
+				 Point *vertices;
+				initgraph(&gd, &gm, "C:\\TurboC3\\BGI");
+
+				printf("Enter the number of vertices of the polygon: ");
+				scanf("%d", &numVertices);
+				
+				// Dynamically allocate memory for vertices
+				vertices = (Point *)malloc(numVertices * sizeof(Point));
+				if (vertices == NULL) {
+					printf("Memory allocation failed\n");
+					return 1;
+				}
+				
+				for (i = 0; i < numVertices; i++) {
+					printf("Enter the x and y coordinates of vertex %d: ", i + 1);
+					scanf("%d %d", &vertices[i].x, &vertices[i].y);
+				}
+
+				// Draw the polygon
+				for (i = 0; i < numVertices; i++) {
+					int j = (i + 1) % numVertices;
+					DDA(vertices[i], vertices[j]);
+				}
+
+				// Fill the polygon
+				scanFill(vertices, numVertices);
+
+				getch();
+				closegraph();
+				
+				// Free dynamically allocated memory
+				free(vertices);
+				
+				return 0;
+			}
+			//(100, 100)
+			//(200, 100)
+			//(150, 150)
+			//(200, 200)
+			//(100, 200)
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+12. Write a Program to implement 2D Scaling and rotation of a triangle.
+
+			#include <graphics.h>
+			#include <conio.h>
+			#include <math.h>
+
+			void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3) {
+				line(x1, y1, x2, y2);
+				line(x2, y2, x3, y3);
+				line(x3, y3, x1, y1);
+			}
+
+			void scaleTriangle(int x1, int y1, int x2, int y2, int x3, int y3, float sx, float sy) {
+				x1 *= sx;
+				y1 *= sy;
+				x2 *= sx;
+				y2 *= sy;
+				x3 *= sx;
+				y3 *= sy;
+
+				drawTriangle(x1, y1, x2, y2, x3, y3);
+			}
+
+			void rotateTriangle(int x1, int y1, int x2, int y2, int x3, int y3, float angle) {
+				float theta = angle * (3.14159 / 180.0);
+				int x1_new = (x1 * cos(theta) - y1 * sin(theta));
+				int y1_new = (x1 * sin(theta) + y1 * cos(theta));
+				int x2_new = (x2 * cos(theta) - y2 * sin(theta));
+				int y2_new = (x2 * sin(theta) + y2 * cos(theta));
+				int x3_new = (x3 * cos(theta) - y3 * sin(theta));
+				int y3_new = (x3 * sin(theta) + y3 * cos(theta));
+
+				drawTriangle(x1_new, y1_new, x2_new, y2_new, x3_new, y3_new);
+			}
+
+
+			int main() {
+				int gd = DETECT, gm;
+				int x1 = 100, y1 = 200, x2 = 200, y2 = 100, x3 = 300, y3 = 200;
+				float sx, sy, angle;
+				int choice;
+
+				initgraph(&gd, &gm, "C:\\TurboC3\\BGI");
+
+				// Draw the original triangle
+				drawTriangle(x1, y1, x2, y2, x3, y3);
+
+				// Take user input for scaling or rotation
+				printf("Choose an operation:\n");
+				printf("1. Scale\n");
+				printf("2. Rotate\n");
+				scanf("%d", &choice);
+
+				switch (choice) {
+					case 1:
+						printf("Enter scaling factors (sx sy): ");
+						scanf("%f %f", &sx, &sy);
+						scaleTriangle(x1, y1, x2, y2, x3, y3, sx, sy);
+						break;
+					case 2:
+						printf("Enter rotation angle (in degrees): ");
+						scanf("%f", &angle);
+						rotateTriangle(x1, y1, x2, y2, x3, y3, angle);
+						break;
+					default:
+						printf("Invalid choice!\n");
+				}
+
+				// Wait for a key press
+				getch();
+
+				// Close the graphics mode
+				closegraph();
+
+				return 0;
+			}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+13. Write a Program to implement 2D Scaling and translation of a triangle.
+
+			#include <graphics.h>
+			#include <conio.h>
+			#include <math.h>
+
+			// Function to draw a triangle
+			void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3) {
+				line(x1, y1, x2, y2);
+				line(x2, y2, x3, y3);
+				line(x3, y3, x1, y1);
+			}
+
+			// Function to scale a triangle
+			void scaleTriangle(int *x1, int *y1, int *x2, int *y2, int *x3, int *y3, float sx, float sy) {
+				*x1 *= sx;
+				*y1 *= sy;
+				*x2 *= sx;
+				*y2 *= sy;
+				*x3 *= sx;
+				*y3 *= sy;
+			}
+
+			// Function to translate a triangle
+			void translateTriangle(int *x1, int *y1, int *x2, int *y2, int *x3, int *y3, int tx, int ty) {
+				*x1 += tx;
+				*y1 += ty;
+				*x2 += tx;
+				*y2 += ty;
+				*x3 += tx;
+				*y3 += ty;
+			}
+
+			int main() {
+				int gd = DETECT, gm;
+				int x1 = 100, y1 = 200, x2 = 200, y2 = 100, x3 = 300, y3 = 200;
+				float sx, sy;
+				int tx, ty;
+				int choice;
+
+				initgraph(&gd, &gm, "C:\\TurboC3\\BGI");
+
+				// Draw the original triangle
+				setcolor(WHITE);
+				drawTriangle(x1, y1, x2, y2, x3, y3);
+				outtextxy(50, 50, "Original Triangle");
+
+				printf("Choose an operation:\n");
+				printf("1. Scale\n");
+				printf("2. Translate\n");
+				scanf("%d", &choice);
+
+				switch (choice) {
+					case 1:
+						printf("Enter scaling factors (sx sy): ");
+						scanf("%f %f", &sx, &sy);
+						scaleTriangle(&x1, &y1, &x2, &y2, &x3, &y3, sx, sy);
+						setcolor(GREEN);
+						drawTriangle(x1, y1, x2, y2, x3, y3);
+						outtextxy(50, 70, "Scaled Triangle");
+						break;
+					case 2:
+						printf("Enter translation values (tx ty): ");
+						scanf("%d %d", &tx, &ty);
+						translateTriangle(&x1, &y1, &x2, &y2, &x3, &y3, tx, ty);
+						setcolor(RED);
+						drawTriangle(x1, y1, x2, y2, x3, y3);
+						outtextxy(50, 90, "Translated Triangle");
+						break;
+					default:
+						printf("Invalid choice!\n");
+				}
+
+				// Wait for a key press
+				getch();
+
+				// Close the graphics mode
+				closegraph();
+
+				return 0;
+			}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+14. Write a Program to implement 2D rotation and translation of a triangle.
+
+			#include <graphics.h>
+			#include <stdio.h>
+			#include <math.h>
+
+			// Function to draw a triangle
+			void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3) {
+				line(x1, y1, x2, y2);
+				line(x2, y2, x3, y3);
+				line(x3, y3, x1, y1);
+			}
+
+			// Function to rotate a point (x, y) by angle degrees
+			void rotatePoint(int *x, int *y, float angle) {
+				float radians = angle * M_PI / 180.0;
+				int newX = *x * cos(radians) - *y * sin(radians);
+				int newY = *x * sin(radians) + *y * cos(radians);
+				*x = newX;
+				*y = newY;
+			}
+
+			// Function to rotate a triangle
+			void rotateTriangle(int *x1, int *y1, int *x2, int *y2, int *x3, int *y3, float angle) {
+				rotatePoint(x1, y1, angle);
+				rotatePoint(x2, y2, angle);
+				rotatePoint(x3, y3, angle);
+			}
+
+			// Function to translate a triangle
+			void translateTriangle(int *x1, int *y1, int *x2, int *y2, int *x3, int *y3, int tx, int ty) {
+				*x1 += tx;
+				*y1 += ty;
+				*x2 += tx;
+				*y2 += ty;
+				*x3 += tx;
+				*y3 += ty;
+			}
+
+			int main() {
+				int gd = DETECT, gm;
+				// Original triangle coordinates
+				int x1 = 100, y1 = 200;
+				int x2 = 200, y2 = 100;
+				int x3 = 300, y3 = 200;
+
+				int choice;
+				float angle;
+				int tx, ty;
+				initgraph(&gd, &gm, "C:\\TurboC3\\BGI");
+
+
+
+				// Draw the original triangle
+				setcolor(WHITE);
+				drawTriangle(x1, y1, x2, y2, x3, y3);
+				outtextxy(50, 50, "Original Triangle");
+
+
+
+				printf("Choose an operation:\n");
+				printf("1. Rotate\n");
+				printf("2. Translate\n");
+				scanf("%d", &choice);
+
+				switch (choice) {
+					case 1:
+						printf("Enter rotation angle (in degrees): ");
+						scanf("%f", &angle);
+						rotateTriangle(&x1, &y1, &x2, &y2, &x3, &y3, angle);
+						setcolor(GREEN);
+						drawTriangle(x1, y1, x2, y2, x3, y3);
+						outtextxy(50, 70, "Rotated Triangle");
+						break;
+					case 2:
+						printf("Enter translation values (tx ty): ");
+						scanf("%d %d", &tx, &ty);
+						translateTriangle(&x1, &y1, &x2, &y2, &x3, &y3, tx, ty);
+						setcolor(RED);
+						drawTriangle(x1, y1, x2, y2, x3, y3);
+						outtextxy(50, 90, "Translated Triangle");
+						break;
+					default:
+						printf("Invalid choice!\n");
+				}
+
+				// Wait for a key press
+				getch();
+
+				// Close the graphics mode
+				closegraph();
+
+				return 0;
+			}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+15. Write a C program to show that R(θ1) . R(θ2) = R(θ1 + θ2)
+
+			#include <stdio.h>
+			#include <math.h>
+			#include <graphics.h>
+
+			// Function to draw a triangle
+			void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, int color) {
+				setcolor(color);
+				line(x1, y1, x2, y2);
+				line(x2, y2, x3, y3);
+				line(x3, y3, x1, y1);
+			}
+
+			// Function to rotate a point around another point (cx, cy)
+			void rotatePoint(int *x, int *y, int cx, int cy, float angle) {
+				float theta = angle * (3.14159 / 180.0);
+				int x_new = (cx + (*x - cx) * cos(theta) - (*y - cy) * sin(theta));
+				int y_new = (cy + (*x - cx) * sin(theta) + (*y - cy) * cos(theta));
+				*x = x_new;
+				*y = y_new;
+			}
+
+			// Function to rotate a triangle
+			void rotateTriangle(int *x1, int *y1, int *x2, int *y2, int *x3, int *y3, float angle) {
+				// Calculate the centroid of the triangle
+				int cx = (*x1 + *x2 + *x3) / 3;
+				int cy = (*y1 + *y2 + *y3) / 3;
+
+				// Rotate each vertex around the centroid
+				rotatePoint(x1, y1, cx, cy, angle);
+				rotatePoint(x2, y2, cx, cy, angle);
+				rotatePoint(x3, y3, cx, cy, angle);
+			}
+
+
+			// Function to translate a triangle
+			void translateTriangle(int *x1, int *y1, int *x2, int *y2, int *x3, int *y3, int dx, int dy) {
+				*x1 += dx;
+				*y1 += dy;
+				*x2 += dx;
+				*y2 += dy;
+				*x3 += dx;
+				*y3 += dy;
+			}
+
+
+			int main() {
+				int gd = DETECT, gm;
+				// Original triangle vertices
+				int x1 = 200, y1 = 200;
+				int x2 = 250, y2 = 300;
+				int x3 = 150, y3 = 300;
+
+				// Angles
+				float theta1 = 30.0;
+				float theta2 = 45.0;
+					// Rotate by theta2 first
+				int x1_rot1 = x1, y1_rot1 = y1;
+				int x2_rot1 = x2, y2_rot1 = y2;
+				int x3_rot1 = x3, y3_rot1 = y3;
+
+					// Rotate by theta1 + theta2 directly
+				int x1_rot2 = x1, y1_rot2 = y1;
+				int x2_rot2 = x2, y2_rot2 = y2;
+				int x3_rot2 = x3, y3_rot2 = y3;
+
+			   initgraph(&gd, &gm, "C:\\TurboC3\\BGI");
+
+
+
+				// Draw original triangle
+				drawTriangle(x1, y1, x2, y2, x3, y3, WHITE);
+				delay(2000); // Delay to show the original triangle
+
+
+
+			rotateTriangle(&x1_rot1, &y1_rot1, &x2_rot1, &y2_rot1, &x3_rot1, &y3_rot1, theta2);
+
+
+				// Translate after rotation to avoid overlap
+			 translateTriangle(&x1_rot1, &y1_rot1, &x2_rot1, &y2_rot1, &x3_rot1, &y3_rot1, 100, 0);
+
+
+				// Draw triangle after first rotation (theta2)
+				drawTriangle(x1_rot1, y1_rot1, x2_rot1, y2_rot1, x3_rot1, y3_rot1, GREEN);
+				delay(2000); // Delay to show the first rotation
+
+				// Rotate by theta1 next
+			rotateTriangle(&x1_rot1, &y1_rot1, &x2_rot1, &y2_rot1, &x3_rot1, &y3_rot1, theta1);
+
+
+				// Translate after rotation to avoid overlap
+			translateTriangle(&x1_rot1, &y1_rot1, &x2_rot1, &y2_rot1, &x3_rot1, &y3_rot1, 0, 100);
+
+
+				// Draw triangle after second rotation (theta2 then theta1)
+				drawTriangle(x1_rot1, y1_rot1, x2_rot1, y2_rot1, x3_rot1, y3_rot1, RED);
+				delay(2000); // Delay to show the second rotation
+
+
+
+			rotateTriangle(&x1_rot2, &y1_rot2, &x2_rot2, &y2_rot2, &x3_rot2, &y3_rot2, theta1 + theta2);
+
+
+				// Translate after rotation to avoid overlap
+			translateTriangle(&x1_rot2, &y1_rot2, &x2_rot2, &y2_rot2, &x3_rot2, &y3_rot2, -100, -100);
+
+
+				// Draw triangle after direct rotation (theta1 + theta2)
+				drawTriangle(x1_rot2, y1_rot2, x2_rot2, y2_rot2, x3_rot2, y3_rot2, BLUE);
+				delay(2000); // Delay to show the direct rotation
+
+				// Wait for a key press
+				getch();
+
+				// Close the graphics mode
+				closegraph();
+
+				return 0;
+			}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+16. Write a C program to show that R(θ1) . R(θ2) = R(θ2) . R(θ1)
+
+			#include <graphics.h>
+			#include <math.h>
+
+			// Function to draw a triangle
+			void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, int color) {
+				setcolor(color);
+				line(x1, y1, x2, y2);
+				line(x2, y2, x3, y3);
+				line(x3, y3, x1, y1);
+			}
+
+			// Function to rotate a point around another point (cx, cy)
+			void rotatePoint(int *x, int *y, int cx, int cy, float angle) {
+				float theta = angle * (3.14159 / 180.0);
+				int x_new = (int)(cx + (*x - cx) * cos(theta) - (*y - cy) * sin(theta));
+				int y_new = (int)(cy + (*x - cx) * sin(theta) + (*y - cy) * cos(theta));
+				*x = x_new;
+				*y = y_new;
+			}
+
+			// Function to rotate a triangle
+			void rotateTriangle(int *x1, int *y1, int *x2, int *y2, int *x3, int *y3, float angle) {
+				// Calculate the centroid of the triangle
+				int cx = (*x1 + *x2 + *x3) / 3;
+				int cy = (*y1 + *y2 + *y3) / 3;
+
+				// Rotate each vertex around the centroid
+				rotatePoint(x1, y1, cx, cy, angle);
+				rotatePoint(x2, y2, cx, cy, angle);
+				rotatePoint(x3, y3, cx, cy, angle);
+			}
+
+			// Function to translate a triangle
+			void translateTriangle(int *x1, int *y1, int *x2, int *y2, int *x3, int *y3, int dx, int dy) {
+				*x1 += dx;
+				*y1 += dy;
+				*x2 += dx;
+				*y2 += dy;
+				*x3 += dx;
+				*y3 += dy;
+			}
+
+			int main() {
+				int gd = DETECT, gm;
+				   // Original triangle vertices
+				int x1 = 200, y1 = 200;
+				int x2 = 250, y2 = 300;
+				int x3 = 150, y3 = 300;
+
+				// Angles for rotation
+				float theta1 = 30.0;
+				float theta2 = 45.0; 
+
+					// Rotate by theta1 then theta2
+				int x1_rot1 = x1, y1_rot1 = y1;
+				int x2_rot1 = x2, y2_rot1 = y2;
+				int x3_rot1 = x3, y3_rot1 = y3;
+
+					// Rotate by theta2 then theta1
+				int x1_rot2 = x1, y1_rot2 = y1;
+				int x2_rot2 = x2, y2_rot2 = y2;
+				int x3_rot2 = x3, y3_rot2 = y3;
+				
+			initgraph(&gd, &gm, "C:\\TurboC3\\BGI");
+
+
+
+				// Draw original triangle
+				drawTriangle(x1, y1, x2, y2, x3, y3, WHITE);
+				delay(1000); // Delay to show the original triangle
+
+
+			rotateTriangle(&x1_rot1, &y1_rot1, &x2_rot1, &y2_rot1, &x3_rot1, &y3_rot1, theta1);
+			translateTriangle(&x1_rot1, &y1_rot1, &x2_rot1, &y2_rot1, &x3_rot1, &y3_rot1,  100, 0);
+				drawTriangle(x1_rot1, y1_rot1, x2_rot1, y2_rot1, x3_rot1, y3_rot1, 8);
+
+			rotateTriangle(&x1_rot1, &y1_rot1, &x2_rot1, &y2_rot1, &x3_rot1, &y3_rot1, theta2);
+			translateTriangle(&x1_rot1, &y1_rot1, &x2_rot1, &y2_rot1, &x3_rot1, &y3_rot1, 0, 100);
+
+				// Draw triangle after rotating by theta1 then theta2 (red)
+				drawTriangle(x1_rot1, y1_rot1, x2_rot1, y2_rot1, x3_rot1, y3_rot1, RED);
+				delay(1000); // Delay to show the rotation by theta1 then theta2
+
+
+			rotateTriangle(&x1_rot2, &y1_rot2, &x2_rot2, &y2_rot2, &x3_rot2, &y3_rot2, theta2);
+			translateTriangle(&x1_rot2, &y1_rot2, &x2_rot2, &y2_rot2, &x3_rot2, &y3_rot2,  150, 0);
+			   drawTriangle(x1_rot2, y1_rot2, x2_rot2, y2_rot2, x3_rot2, y3_rot2, GREEN);
+
+			rotateTriangle(&x1_rot2, &y1_rot2, &x2_rot2, &y2_rot2, &x3_rot2, &y3_rot2, theta1);
+			translateTriangle(&x1_rot2, &y1_rot2, &x2_rot2, &y2_rot2, &x3_rot2, &y3_rot2, 0,150);
+
+
+				// Draw triangle after rotating by theta2 then theta1 (blue)
+				drawTriangle(x1_rot2, y1_rot2, x2_rot2, y2_rot2, x3_rot2, y3_rot2, BLUE);
+				delay(1000); // Delay to show the rotation by theta2 then theta1
+
+				// Wait for a key press
+				getch();
+
+				// Close the graphics mode
+				closegraph();
+
+				return 0;
+			}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+17. Write a C program to show that two successive translations are additive in nature.
+
+			#include <graphics.h>
+			#include <stdlib.h>
+			#include <stdio.h>
+			//T(dx1,dy1).T(dx2,dy2)=T(dx1+dx2,dy1+dy2)
+			// Function to draw a triangle
+			void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, int color) {
+				setcolor(color);
+				line(x1, y1, x2, y2);
+				line(x2, y2, x3, y3);
+				line(x3, y3, x1, y1);
+			}
+
+			// Function to translate a triangle
+			void translateTriangle(int *x1, int *y1, int *x2, int *y2, int *x3, int *y3, int tx, int ty) {
+				*x1 += tx;
+				*y1 += ty;
+				*x2 += tx;
+				*y2 += ty;
+				*x3 += tx;
+				*y3 += ty;
+			}
+
+			int main() {
+				int gd = DETECT, gm;
+
+
+				// Original triangle vertices
+				int x1 = 50, y1 = 50;
+				int x2 = 100, y2 = 150;
+				int x3 = 0, y3 = 150;
+
+				// Combined translation directly from the original triangle
+				int x1_combined = x1, y1_combined = y1;
+				int x2_combined = x2, y2_combined = y2;
+				int x3_combined = x3, y3_combined = y3;
+
+				// Translation values
+				int dx1 = 50, dy1 = 50;
+				int dx2 = 100, dy2 = 120;
+
+				// First translation
+				int x1_t1 = x1, y1_t1 = y1;
+				int x2_t1 = x2, y2_t1 = y2;
+				int x3_t1 = x3, y3_t1 = y3;
+
+				int x1_t2, x2_t2, x3_t2, y1_t2, y2_t2, y3_t2;
+					initgraph(&gd, &gm, "C:\\TurboC3\\BGI");  // Initialize the graphics mode
+
+				// Apply first translation
+				translateTriangle(&x1_t1, &y1_t1, &x2_t1, &y2_t1, &x3_t1, &y3_t1, dx1, dy1);
+
+				// Second translation based on first translation
+				x1_t2 = x1_t1;
+				y1_t2 = y1_t1;
+				x2_t2 = x2_t1;
+				y2_t2 = y2_t1;
+				x3_t2 = x3_t1;
+				y3_t2 = y3_t1;
+
+				// Apply second translation
+				translateTriangle(&x1_t2, &y1_t2, &x2_t2, &y2_t2, &x3_t2, &y3_t2, dx2, dy2);
+
+				// Apply combined translation
+				translateTriangle(&x1_combined, &y1_combined, &x2_combined, &y2_combined, &x3_combined, &y3_combined, dx1 + dx2, dy1 + dy2);
+
+				// Draw original triangle
+				drawTriangle(x1, y1, x2, y2, x3, y3, WHITE);
+				outtextxy(x1, y1 - 10, "Original Triangle");
+				delay(1000);
+				// Draw triangle after first translation (red)
+				drawTriangle(x1_t1, y1_t1, x2_t1, y2_t1, x3_t1, y3_t1, RED);
+				outtextxy(x1_t1, y1_t1 - 10, "After First Translation");
+				 delay(1000);
+
+				// Draw triangle after second translation (blue)
+				drawTriangle(x1_t2, y1_t2, x2_t2, y2_t2, x3_t2, y3_t2, BLUE);
+				outtextxy(x1_t2, y1_t2 - 10, "After Second Translation");
+				 delay(3000);
+
+				// Draw the combined translated triangle (green)
+				drawTriangle(x1_combined, y1_combined, x2_combined, y2_combined, x3_combined, y3_combined, GREEN);
+				outtextxy(x1_combined, y1_combined - 10, "After Combined Translation");
+
+				// Wait for a key press
+				getch();
+
+				// Close the graphics mode
+				closegraph();
+
+				return 0;
+			}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+18. Write a C program to show that two successive rotations are commutative in nature.
+
+			#include <graphics.h>
+			#include <math.h>
+
+			// Function to draw a triangle
+			void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, int color) {
+				setcolor(color);
+				line(x1, y1, x2, y2);
+				line(x2, y2, x3, y3);
+				line(x3, y3, x1, y1);
+			}
+
+			// Function to rotate a point around another point (cx, cy)
+			void rotatePoint(int *x, int *y, int cx, int cy, float angle) {
+				float theta = angle * (3.14159 / 180.0);
+				int x_new = (int)(cx + (*x - cx) * cos(theta) - (*y - cy) * sin(theta));
+				int y_new = (int)(cy + (*x - cx) * sin(theta) + (*y - cy) * cos(theta));
+				*x = x_new;
+				*y = y_new;
+			}
+
+			// Function to rotate a triangle
+			void rotateTriangle(int *x1, int *y1, int *x2, int *y2, int *x3, int *y3, float angle) {
+				// Calculate the centroid of the triangle
+				int cx = (*x1 + *x2 + *x3) / 3;
+				int cy = (*y1 + *y2 + *y3) / 3;
+
+				// Rotate each vertex around the centroid
+				rotatePoint(x1, y1, cx, cy, angle);
+				rotatePoint(x2, y2, cx, cy, angle);
+				rotatePoint(x3, y3, cx, cy, angle);
+			}
+
+			// Function to translate a triangle
+			void translateTriangle(int *x1, int *y1, int *x2, int *y2, int *x3, int *y3, int dx, int dy) {
+				*x1 += dx;
+				*y1 += dy;
+				*x2 += dx;
+				*y2 += dy;
+				*x3 += dx;
+				*y3 += dy;
+			}
+
+			int main() {
+				int gd = DETECT, gm;
+				   // Original triangle vertices
+				int x1 = 200, y1 = 200;
+				int x2 = 250, y2 = 300;
+				int x3 = 150, y3 = 300;
+
+				// Angles for rotation
+				float theta1 = 30.0;
+				float theta2 = 45.0; 
+
+					// Rotate by theta1 then theta2
+				int x1_rot1 = x1, y1_rot1 = y1;
+				int x2_rot1 = x2, y2_rot1 = y2;
+				int x3_rot1 = x3, y3_rot1 = y3;
+
+					// Rotate by theta2 then theta1
+				int x1_rot2 = x1, y1_rot2 = y1;
+				int x2_rot2 = x2, y2_rot2 = y2;
+				int x3_rot2 = x3, y3_rot2 = y3;
+				
+			initgraph(&gd, &gm, "C:\\TurboC3\\BGI");
+
+
+
+				// Draw original triangle
+				drawTriangle(x1, y1, x2, y2, x3, y3, WHITE);
+				delay(1000); // Delay to show the original triangle
+
+
+			rotateTriangle(&x1_rot1, &y1_rot1, &x2_rot1, &y2_rot1, &x3_rot1, &y3_rot1, theta1);
+			translateTriangle(&x1_rot1, &y1_rot1, &x2_rot1, &y2_rot1, &x3_rot1, &y3_rot1,  100, 0);
+				drawTriangle(x1_rot1, y1_rot1, x2_rot1, y2_rot1, x3_rot1, y3_rot1, 8);
+
+			rotateTriangle(&x1_rot1, &y1_rot1, &x2_rot1, &y2_rot1, &x3_rot1, &y3_rot1, theta2);
+			translateTriangle(&x1_rot1, &y1_rot1, &x2_rot1, &y2_rot1, &x3_rot1, &y3_rot1, 0, 100);
+
+				// Draw triangle after rotating by theta1 then theta2 (red)
+				drawTriangle(x1_rot1, y1_rot1, x2_rot1, y2_rot1, x3_rot1, y3_rot1, RED);
+				delay(1000); // Delay to show the rotation by theta1 then theta2
+
+
+			rotateTriangle(&x1_rot2, &y1_rot2, &x2_rot2, &y2_rot2, &x3_rot2, &y3_rot2, theta2);
+			translateTriangle(&x1_rot2, &y1_rot2, &x2_rot2, &y2_rot2, &x3_rot2, &y3_rot2,  150, 0);
+			   drawTriangle(x1_rot2, y1_rot2, x2_rot2, y2_rot2, x3_rot2, y3_rot2, GREEN);
+
+			rotateTriangle(&x1_rot2, &y1_rot2, &x2_rot2, &y2_rot2, &x3_rot2, &y3_rot2, theta1);
+			translateTriangle(&x1_rot2, &y1_rot2, &x2_rot2, &y2_rot2, &x3_rot2, &y3_rot2, 0,150);
+
+
+				// Draw triangle after rotating by theta2 then theta1 (blue)
+				drawTriangle(x1_rot2, y1_rot2, x2_rot2, y2_rot2, x3_rot2, y3_rot2, BLUE);
+				delay(1000); // Delay to show the rotation by theta2 then theta1
+
+				// Wait for a key press
+				getch();
+
+				// Close the graphics mode
+				closegraph();
+
+				return 0;
+			}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+19. Write a C program to show that two successive translations are commutative in nature.
+
+			#include <graphics.h>
+			#include <stdlib.h>
+			#include <stdio.h>
+
+			// Function to draw a triangle
+			void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, int color) {
+				setcolor(color);
+				line(x1, y1, x2, y2);
+				line(x2, y2, x3, y3);
+				line(x3, y3, x1, y1);
+			}
+
+			// Function to translate a triangle
+			void translateTriangle(int *x1, int *y1, int *x2, int *y2, int *x3, int *y3, int tx, int ty) {
+				*x1 += tx;
+				*y1 += ty;
+				*x2 += tx;
+				*y2 += ty;
+				*x3 += tx;
+				*y3 += ty;
+			}
+
+			int main() {
+				int gd = DETECT, gm;
+
+				// Original triangle vertices
+				int x1 = 100, y1 = 100;
+				int x2 = 150, y2 = 200;
+				int x3 = 50, y3 = 200;
+
+				// Translation values
+				int dx1 = 50, dy1 = 50;
+				int dx2 = 100, dy2 = 100;
+
+				// First translation (dx1, dy1)
+				int x1_t1 = x1, y1_t1 = y1;
+				int x2_t1 = x2, y2_t1 = y2;
+				int x3_t1 = x3, y3_t1 = y3;
+
+				// Second translation (dx2, dy2) after first translation
+				int x1_t2 = x1, y1_t2 = y1;
+				int x2_t2 = x2, y2_t2 = y2;
+				int x3_t2 = x3, y3_t2 = y3;
+
+				initgraph(&gd, &gm, "C:\\TurboC3\\BGI");
+
+				// Draw original triangle
+				drawTriangle(x1, y1, x2, y2, x3, y3, WHITE);
+				delay(1000); // Delay to show the original triangle
+
+				// First translation
+				translateTriangle(&x1_t1, &y1_t1, &x2_t1, &y2_t1, &x3_t1, &y3_t1, dx1, dy1);
+				drawTriangle(x1_t1, y1_t1, x2_t1, y2_t1, x3_t1, y3_t1, RED);
+				delay(1000); // Delay to show the first translation
+
+				// Second translation after first translation
+				translateTriangle(&x1_t1, &y1_t1, &x2_t1, &y2_t1, &x3_t1, &y3_t1, dx2, dy2);
+				drawTriangle(x1_t1, y1_t1, x2_t1, y2_t1, x3_t1, y3_t1, BLUE);
+				delay(1000); // Delay to show the second translation
+
+				// First translation
+				translateTriangle(&x1_t2, &y1_t2, &x2_t2, &y2_t2, &x3_t2, &y3_t2, dx2, dy2);
+				drawTriangle(x1_t2, y1_t2, x2_t2, y2_t2, x3_t2, y3_t2, GREEN);
+				delay(1000); // Delay to show the first translation
+
+				// Second translation after first translation
+				translateTriangle(&x1_t2, &y1_t2, &x2_t2, &y2_t2, &x3_t2, &y3_t2, dx1, dy1);
+				drawTriangle(x1_t2, y1_t2, x2_t2, y2_t2, x3_t2, y3_t2, YELLOW);
+				delay(1000); // Delay to show the second translation
+
+				// Wait for a key press
+				getch();
+
+				// Close the graphics mode
+				closegraph();
+
+				return 0;
+			}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+20. Write a C Program to show that Reflection about a line Y=X is equivalent to reflection
+relative to X-axis followed by anticlockwise rotation of 900.
+
+			#include <graphics.h>
+			#include <stdio.h>
+			#include <math.h>
+
+			// Function to draw a triangle
+			void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, int color) {
+				setcolor(color);
+				line(x1, y1, x2, y2);
+				line(x2, y2, x3, y3);
+				line(x3, y3, x1, y1);
+				delay(1000); // Delay to show the triangle
+			}
+
+			// Function to reflect a point about the line y=x
+			void reflectAboutLineYX(int *x, int *y) {
+				int temp = *x;
+				*x = *y;
+				*y = temp;
+			}
+
+			// Function to reflect a point about the x-axis
+			void reflectAboutXAxis(int *x, int *y) {
+				*y = -(*y);
+			}
+
+			// Function to rotate a point 90 degrees clockwise
+			void rotate90Clockwise(int *x, int *y) {
+				int temp = *x;
+				*x = *y;
+				*y = -temp;
+			}
+
+			int main() {
+				int gd = DETECT, gm;
+
+				// Original triangle vertices
+				int x1 = 100, y1 = 100;
+				int x2 = 200, y2 = 100;
+				int x3 = 150, y3 = 200;
+
+				// Reflection about the line y = x
+				int x1_reflect1 = x1, y1_reflect1 = y1;
+				int x2_reflect1 = x2, y2_reflect1 = y2;
+				int x3_reflect1 = x3, y3_reflect1 = y3;
+
+				// Reflection about the x-axis
+				int x1_reflect2 = x1_reflect1, y1_reflect2 = y1_reflect1;
+				int x2_reflect2 = x2_reflect1, y2_reflect2 = y2_reflect1;
+				int x3_reflect2 = x3_reflect1, y3_reflect2 = y3_reflect1;
+
+				// Rotation by 90 degrees counterclockwise
+				int x1_transform = x1_reflect2, y1_transform = y1_reflect2;
+				int x2_transform = x2_reflect2, y2_transform = y2_reflect2;
+				int x3_transform = x3_reflect2, y3_transform = y3_reflect2;
+
+				initgraph(&gd, &gm, "C:\\TurboC3\\BGI");
+
+				// Draw original triangle
+				drawTriangle(x1, y1, x2, y2, x3, y3, WHITE);
+
+				reflectAboutLineYX(&x1_reflect1, &y1_reflect1);
+				reflectAboutLineYX(&x2_reflect1, &y2_reflect1);
+				reflectAboutLineYX(&x3_reflect1, &y3_reflect1);
+				// Draw triangle after reflection about y = x (RED)
+				drawTriangle(x1_reflect1, y1_reflect1, x2_reflect1, y2_reflect1, x3_reflect1, y3_reflect1, RED);
+
+				reflectAboutXAxis(&x1_reflect2, &y1_reflect2);
+				reflectAboutXAxis(&x2_reflect2, &y2_reflect2);
+				reflectAboutXAxis(&x3_reflect2, &y3_reflect2);
+				// Draw triangle after reflection about x-axis (GREEN)
+				drawTriangle(x1_reflect2, y1_reflect2, x2_reflect2, y2_reflect2, x3_reflect2, y3_reflect2, GREEN);
+
+				rotate90Clockwise(&x1_transform, &y1_transform);
+				rotate90Clockwise(&x2_transform, &y2_transform);
+				rotate90Clockwise(&x3_transform, &y3_transform);
+				// Draw triangle after rotation (BLUE)
+				drawTriangle(x1_transform, y1_transform, x2_transform, y2_transform, x3_transform, y3_transform, BLUE);
+
+				// Wait for a key press
+				getch();
+
+				// Close the graphics mode
+				closegraph();
+
+				return 0;
+			}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+21. Write a Program to implement all type of reflections about X axis and about Y axis of a
+triangle.
+
+			#include <graphics.h>
+			#include <stdio.h>
+
+			// Function to draw a triangle
+			void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, int color) {
+				setcolor(color);
+				line(x1, y1, x2, y2);
+				line(x2, y2, x3, y3);
+				line(x3, y3, x1, y1);
+			}
+
+			// Function to reflect a point about the X-axis
+			void reflectAboutXAxis(int *x, int *y, int height) {
+				*y = height - *y;
+			}
+
+			// Function to reflect a point about the Y-axis
+			void reflectAboutYAxis(int *x, int *y, int width) {
+				*x = width - *x;
+			}
+
+			// Function to reflect a point about the origin (both axes)
+			void reflectAboutOrigin(int *x, int *y, int width, int height) {
+				*x = width - *x;
+				*y = height - *y;
+			}
+
+			int main() {
+				int gd = DETECT, gm;
+
+				// Original triangle vertices
+				int x1 = 100, y1 = 100;
+				int x2 = 200, y2 = 100;
+				int x3 = 150, y3 = 200;
+					// Set the viewport to 600x480
+				int width = 600, height = 480;
+
+				// Reflection about the X-axis
+				int x1_xaxis = x1, y1_xaxis = y1;
+				int x2_xaxis = x2, y2_xaxis = y2;
+				int x3_xaxis = x3, y3_xaxis = y3;
+
+				// Reflection about the Y-axis
+				int x1_yaxis = x1, y1_yaxis = y1;
+				int x2_yaxis = x2, y2_yaxis = y2;
+				int x3_yaxis = x3, y3_yaxis = y3;
+				
+				// Reflection about the origin (both axes)
+				int x1_origin = x1, y1_origin = y1;
+				int x2_origin = x2, y2_origin = y2;
+				int x3_origin = x3, y3_origin = y3;
+				initgraph(&gd, &gm, "C:\\TurboC3\\BGI");
+			  setviewport(0, 0, width, height, 1);
+				// Draw original triangle
+				drawTriangle(x1, y1, x2, y2, x3, y3, WHITE);
+				delay(1000); // Delay to show the original triangle
+
+				reflectAboutXAxis(&x1_xaxis, &y1_xaxis, height);
+				reflectAboutXAxis(&x2_xaxis, &y2_xaxis, height);
+				reflectAboutXAxis(&x3_xaxis, &y3_xaxis, height);
+
+				// Draw triangle after reflection about X-axis (RED)
+				drawTriangle(x1_xaxis, y1_xaxis, x2_xaxis, y2_xaxis, x3_xaxis, y3_xaxis, RED);
+				delay(1000); // Delay to show the reflection about X-axis
+
+
+				reflectAboutYAxis(&x1_yaxis, &y1_yaxis, width);
+				reflectAboutYAxis(&x2_yaxis, &y2_yaxis, width);
+				reflectAboutYAxis(&x3_yaxis, &y3_yaxis, width);
+
+				// Draw triangle after reflection about Y-axis (GREEN)
+				drawTriangle(x1_yaxis, y1_yaxis, x2_yaxis, y2_yaxis, x3_yaxis, y3_yaxis, GREEN);
+				delay(1000); // Delay to show the reflection about Y-axis
+
+				reflectAboutOrigin(&x1_origin, &y1_origin, width, height);
+				reflectAboutOrigin(&x2_origin, &y2_origin, width, height);
+				reflectAboutOrigin(&x3_origin, &y3_origin, width, height);
+
+				// Draw triangle after reflection about the origin (CYAN)
+				drawTriangle(x1_origin, y1_origin, x2_origin, y2_origin, x3_origin, y3_origin, CYAN);
+				delay(1000); // Delay to show the reflection about the origin
+
+				// Wait for a key press
+				getch();
+
+				// Close the graphics mode
+				closegraph();
+
+				return 0;
+			}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+22. Write a Program to implement all type of reflections about origin and about a line Y = X
+for a triangle.
+
+			#include <graphics.h>
+			#include <stdio.h>
+
+			// Function to draw a triangle
+			void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, int color) {
+				setcolor(color);
+				line(x1, y1, x2, y2);
+				line(x2, y2, x3, y3);
+				line(x3, y3, x1, y1);
+			}
+
+			// Function to reflect a point about the origin
+			void reflectAboutOrigin(int *x, int *y) {
+				*x = -*x;
+				*y = -*y;
+			}
+
+			// Function to reflect a point about the line y = x
+			void reflectAboutLineYX(int *x, int *y) {
+				int temp = *x;
+				*x = *y;
+				*y = temp;
+			}
+
+			// Function to reflect a point about the x-axis
+			void reflectAboutXAxis(int *x, int *y) {
+				*y = -*y;
+			}
+
+			// Function to reflect a point about the y-axis
+			void reflectAboutYAxis(int *x, int *y) {
+				*x = -*x;
+			}
+
+			int main() {
+				int gd = DETECT, gm;
+					// Original triangle vertices
+				int x1 = 100, y1 = 100;
+				int x2 = 200, y2 = 100;
+				int x3 = 150, y3 = 200;
+					
+					// Prompt user for reflection type
+				int choice;
+				
+				// Variables to store reflected coordinates
+				int x1_reflect, y1_reflect;
+				int x2_reflect, y2_reflect;
+				int x3_reflect, y3_reflect;
+				initgraph(&gd, &gm, "C:\\TurboC3\\BGI");
+
+				// Draw original triangle
+				drawTriangle(x1, y1, x2, y2, x3, y3, WHITE);
+				delay(1000); // Delay to show the original triangle
+
+
+				printf("Select the type of reflection:\n");
+				printf("1. Reflection about the origin\n");
+				printf("2. Reflection about the line y = x\n");
+				printf("3. Reflection about the x-axis\n");
+				printf("4. Reflection about the y-axis\n");
+				printf("Enter your choice (1-4): ");
+				scanf("%d", &choice);
+
+				// Perform reflection based on user's choice
+				switch(choice) {
+					case 1:
+						x1_reflect = x1;
+						y1_reflect = y1;
+						x2_reflect = x2;
+						y2_reflect = y2;
+						x3_reflect = x3;
+						y3_reflect = y3;
+
+						reflectAboutOrigin(&x1_reflect, &y1_reflect);
+						reflectAboutOrigin(&x2_reflect, &y2_reflect);
+						reflectAboutOrigin(&x3_reflect, &y3_reflect);
+
+						// Draw triangle after reflection about the origin (RED)
+						drawTriangle(x1_reflect + getmaxx()/2, y1_reflect + getmaxy()/2,
+									 x2_reflect + getmaxx()/2, y2_reflect + getmaxy()/2,
+									 x3_reflect + getmaxx()/2, y3_reflect + getmaxy()/2, RED);
+						break;
+
+					case 2:
+						x1_reflect = x1;
+						y1_reflect = y1;
+						x2_reflect = x2;
+						y2_reflect = y2;
+						x3_reflect = x3;
+						y3_reflect = y3;
+
+						reflectAboutLineYX(&x1_reflect, &y1_reflect);
+						reflectAboutLineYX(&x2_reflect, &y2_reflect);
+						reflectAboutLineYX(&x3_reflect, &y3_reflect);
+
+						// Draw triangle after reflection about the line y = x (GREEN)
+						drawTriangle(x1_reflect + getmaxx()/2, y1_reflect + getmaxy()/2,
+									 x2_reflect + getmaxx()/2, y2_reflect + getmaxy()/2,
+									 x3_reflect + getmaxx()/2, y3_reflect + getmaxy()/2, GREEN);
+						break;
+
+					case 3:
+						x1_reflect = x1;
+						y1_reflect = y1;
+						x2_reflect = x2;
+						y2_reflect = y2;
+						x3_reflect = x3;
+						y3_reflect = y3;
+
+						reflectAboutXAxis(&x1_reflect, &y1_reflect);
+						reflectAboutXAxis(&x2_reflect, &y2_reflect);
+						reflectAboutXAxis(&x3_reflect, &y3_reflect);
+
+						// Draw triangle after reflection about the x-axis (BLUE)
+						drawTriangle(x1_reflect + getmaxx()/2, y1_reflect + getmaxy()/2,
+									 x2_reflect + getmaxx()/2, y2_reflect + getmaxy()/2,
+									 x3_reflect + getmaxx()/2, y3_reflect + getmaxy()/2, BLUE);
+						break;
+
+					case 4:
+						x1_reflect = x1;
+						y1_reflect = y1;
+						x2_reflect = x2;
+						y2_reflect = y2;
+						x3_reflect = x3;
+						y3_reflect = y3;
+
+						reflectAboutYAxis(&x1_reflect, &y1_reflect);
+						reflectAboutYAxis(&x2_reflect, &y2_reflect);
+						reflectAboutYAxis(&x3_reflect, &y3_reflect);
+
+						// Draw triangle after reflection about the y-axis (CYAN)
+						drawTriangle(x1_reflect + getmaxx()/2, y1_reflect + getmaxy()/2,
+									 x2_reflect + getmaxx()/2, y2_reflect + getmaxy()/2,
+									 x3_reflect + getmaxx()/2, y3_reflect + getmaxy()/2, CYAN);
+						break;
+
+					default:
+						printf("Invalid choice!\n");
+						break;
+				}
+
+				// Wait for a key press
+				getch();
+
+				// Close the graphics mode
+				closegraph();
+
+				return 0;
+			}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+23. Write a Program to implement X and Y shear transformation
+
+			#include <graphics.h>
+			#include <stdio.h>
+
+			// Function to perform X shear transformation
+			void shearX(int x, int y, float shx) {
+				x = x + shx * y;
+			}
+
+			// Function to perform Y shear transformation
+			void shearY(int x, int y, float shy) {
+				y = y + shy * x;
+			}
+
+			// Function to shear points
+			void shear(int x[], int y[], int n, float shx, float shy) {
+				int i;
+				for (i = 0; i < n; i++) {
+				x[i] += shx * y[i];
+				y[i] += shy * x[i];
+				}
+			}
+
+			// Function to draw a line using DDA algorithm
+			void dda(int x1, int y1, int x2, int y2, int color) {
+				int dx = x2 - x1;
+				int dy = y2 - y1;
+				int steps = abs(dx) > abs(dy) ? abs(dx) : abs(dy);
+				float xIncrement = (float)dx / (float)steps;
+				float yIncrement = (float)dy / (float)steps;
+				float x = x1, y = y1;
+				int i;
+				for (i = 0; i <= steps; i++) {
+				putpixel(x, y, color);
+				x += xIncrement;
+				y += yIncrement;
+				}
+			}
+
+			// Function to draw a polygon
+			void drawPolygon(int x[], int y[], int n, int color) {
+				int i;
+				for (i = 0; i < n - 1; i++) {
+					dda(x[i], y[i], x[i + 1], y[i + 1], color);
+				}
+				dda(x[n - 1], y[n - 1], x[0], y[0], color);
+			}
+
+			int main() {
+				int gd = DETECT, gm;
+					// Original hexagon vertices
+				int poly_x[] = {100,260,260,100,100};
+				int poly_y[] = {50 ,50 ,150,150,50};
+				int n = sizeof(poly_x) / sizeof(poly_x[0]);
+					// Shear factors
+				float shx, shy;
+				initgraph(&gd, &gm, "C:\\TurboC3\\BGI");
+				
+				drawPolygon(poly_x, poly_y, n, WHITE);
+				printf("Enter shear factors (shx shy): ");
+				scanf("%f %f", &shx, &shy);
+
+				// Shear the hexagon vertices
+				shear(poly_x, poly_y, n, shx, shy);
+
+				// Draw the sheared hexagon
+				drawPolygon(poly_x, poly_y, n, WHITE);
+
+				// Wait for a key press
+				getch();
+
+				// Close the graphics mode
+				closegraph();
+
+				return 0;
+			}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+24. Write a Program to implement rotation about arbitrary point.
+
+			#include <graphics.h>
+			#include <math.h>
+			#include <stdio.h>
+
+			// Function to draw a triangle
+			void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, int color) {
+				setcolor(color);
+				line(x1, y1, x2, y2);
+				line(x2, y2, x3, y3);
+				line(x3, y3, x1, y1);
+			}
+
+			// Function to translate a point (x, y) by (tx, ty)
+			void translatePoint(int *x, int *y, int tx, int ty) {
+				*x += tx;
+				*y += ty;
+			}
+
+			// Function to rotate a point (x, y) about the origin by angle theta
+			void rotatePoint(int *x, int *y, float theta) {
+				float rad = theta * (M_PI / 180.0); // Convert angle to radians
+				int x_new = (*x * cos(rad) - *y * sin(rad));
+				int y_new = (*x * sin(rad) + *y * cos(rad));
+				*x = x_new;
+				*y = y_new;
+			}
+
+			// Function to perform rotation about an arbitrary point (px, py)
+			void rotateAboutPoint(int *x, int *y, int px, int py, float theta) {
+				// Translate point to the origin
+				translatePoint(x, y, -px, -py);
+				// Rotate point about the origin
+				rotatePoint(x, y, theta);
+				// Translate point back to its original position
+				translatePoint(x, y, px, py);
+			}
+
+
+
+			int main() {
+				int gd = DETECT, gm;
+				
+				// Original triangle vertices
+				int x1 = 100, y1 = 100;
+				int x2 = 150, y2 = 50;
+				int x3 = 200, y3 = 100;
+				
+				// Rotate the triangle about the vertex (x1, y1)
+				int x2_rot = x2, y2_rot = y2;
+				int x3_rot = x3, y3_rot = y3;
+				
+				// Rotation angle
+				float theta = 45.0;
+				initgraph(&gd, &gm, "C:\\TurboC3\\BGI");
+
+				// Draw original triangle
+				drawTriangle(x1, y1, x2, y2, x3, y3, WHITE);
+				delay(2000); // Delay to show the original triangle
+				
+			rotateAboutPoint(&x2_rot, &y2_rot, x1, y1, theta);
+			rotateAboutPoint(&x3_rot, &y3_rot, x1, y1, theta);
+
+
+				// Draw the rotated triangle
+				drawTriangle(x1, y1, x2_rot, y2_rot, x3_rot, y3_rot, RED);
+				delay(2000); // Delay to show the rotated triangle
+
+				// Wait for a key press
+				getch();
+
+				// Close the graphics mode
+				closegraph();
+
+				return 0;
+			}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+25. Write a Program to implement Cohen Sutherland line clipping algorithm.
+
+			#include <stdio.h>
+			#include <graphics.h>
+
+			// Function to compute region code for a point (x, y)
+			int computeRegionCode(int x, int y, int xmin, int ymin, int xmax, int ymax) {
+				int code = 0;
+
+				if (x < xmin)
+					code |= 1; // Left
+				else if (x > xmax)
+					code |= 2; // Right
+				if (y < ymin)
+					code |= 4; // Bottom
+				else if (y > ymax)
+					code |= 8; // Top
+
+				return code;
+			}
+
+			// Function to clip a line using Cohen-Sutherland algorithm
+			void cohenSutherland(int x1, int y1, int x2, int y2, int xmin, int ymin, int xmax, int ymax) {
+				int code1 = computeRegionCode(x1, y1, xmin, ymin, xmax, ymax);
+				int code2 = computeRegionCode(x2, y2, xmin, ymin, xmax, ymax);
+				int accept = 0;
+
+				while (1) {
+					if (!(code1 | code2)) {
+						accept = 1; // Both endpoints are inside window
+						break;
+					} else if (code1 & code2) {
+						break; // Both endpoints are outside window, trivially reject
+					} else {
+						int codeOut = code1 ? code1 : code2;
+						int x, y;
+
+						if (codeOut & 8) {
+							x = x1 + (x2 - x1) * (ymax - y1) / (y2 - y1);
+							y = ymax;
+						} else if (codeOut & 4) {
+							x = x1 + (x2 - x1) * (ymin - y1) / (y2 - y1);
+							y = ymin;
+						} else if (codeOut & 2) {
+							y = y1 + (y2 - y1) * (xmax - x1) / (x2 - x1);
+							x = xmax;
+						} else if (codeOut & 1) {
+							y = y1 + (y2 - y1) * (xmin - x1) / (x2 - x1);
+							x = xmin;
+						}
+
+						if (codeOut == code1) {
+							x1 = x;
+							y1 = y;
+							code1 = computeRegionCode(x1, y1, xmin, ymin, xmax, ymax);
+						} else {
+							x2 = x;
+							y2 = y;
+							code2 = computeRegionCode(x2, y2, xmin, ymin, xmax, ymax);
+						}
+					}
+				}
+
+				if (accept) {
+					// Draw the clipped line
+					setcolor(RED);
+					line(x1, y1, x2, y2);
+				}
+			}
+
+			int main() {
+				int gd = DETECT, gm;
+				// Input window coordinates
+				int xmin, ymin, xmax, ymax;
+				// Input line endpoints
+				int x1, y1, x2, y2;
+				initgraph(&gd, &gm, "C:\\TurboC3\\BGI");
+
+
+				printf("Enter the coordinates of the clipping window (xmin ymin xmax ymax): ");
+				scanf("%d %d %d %d", &xmin, &ymin, &xmax, &ymax);
+
+				// Draw the clipping window
+				rectangle(xmin, ymin, xmax, ymax);
+
+
+				printf("Enter the coordinates of the line endpoints (x1 y1 x2 y2): ");
+				scanf("%d %d %d %d", &x1, &y1, &x2, &y2);
+
+				// Draw the original line
+				setcolor(WHITE);
+				line(x1, y1, x2, y2);
+
+				// Clip the line using Cohen-Sutherland algorithm
+				cohenSutherland(x1, y1, x2, y2, xmin, ymin, xmax, ymax);
+
+				getch();
+				closegraph();
+
+				return 0;
+			}
+
+			// 50 50 250 150
+			// 20 50 300 200
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+26. Write a Program to implement midpoint line clipping algorithm.
+
+			#include <stdio.h>
+			#include <conio.h>
+			#include <stdlib.h>
+			#include <dos.h>
+			#include <math.h>
+			#include <graphics.h>
+
+			// 20 50 300 200
+			typedef struct coordinate {
+				int x,y;
+				char code[4];
+			}PT;
+
+			void drawwindow();
+			void drawline (PT p1, PT p2);
+			PT setcode(PT p);
+			int visibility (PT p1, PT p2);
+			PT resetendpt (PT p1, PT p2);
+
+			midsub(PT p1,PT p2) {
+				PT mid;
+				int v;
+				p1 = setcode(p1);
+				p2 = setcode(p2);
+				v = visibility(p1, p2);
+				switch(v) {
+					case 0:
+						/* Line completely visible */
+						drawline(p1, p2);
+						break;
+					case 1:
+						/* Line completely invisible */
+						break;
+					case 2:
+						/* line partly visible */
+						mid.x = p1.x + (p2.x - p1.x) / 2;
+						mid.y = p1.y + (p2.y - p1.y) / 2;
+						midsub(p1, mid);
+						mid.x = mid.x + 1;
+						mid.y = mid.y + 1;
+						midsub(mid, p2);
+						break;
+				}
+			}
+
+
+			int main() {
+				int gd = DETECT, gm, v;
+				PT p1, p2, ptemp;
+				initgraph(&gd, &gm, "C:\\TurboC3\\BGI");
+
+				printf("ENTER END-POINT 1 (x,y): ");
+				scanf("%d%d", &p1.x, &p1.y);
+				printf("\nENTER END-POINT 2 (x,y): ");
+				scanf("%d%d", &p2.x, &p2.y);
+
+				cleardevice();
+				drawwindow();
+
+				drawline(p1, p2);
+				getch();
+				cleardevice();
+				drawwindow();
+				midsub(p1, p2);
+				getch();
+				closegraph();
+				return(0);
+			}
+
+
+			void drawwindow() {
+				setcolor(RED);
+				line(150, 100, 450, 100);
+				line(450, 100, 450, 400);
+				line(450,400,150,400);
+				line(150,400,150,100);
+			}
+
+			void drawline (PT p1,PT p2){
+				setcolor(15);
+				line(p1.x,p1.y,p2.x,p2.y);
+			}
+
+			PT setcode(PT p) {
+				PT ptemp;
+				if(p.y<=100)
+					ptemp.code[0]='1';
+				else
+					ptemp.code[0]='0';
+
+				if(p.y>=400)
+					ptemp.code[1]='1';
+				else
+					ptemp.code[1]='0';
+
+				if (p.x>=450)
+					ptemp.code[2]='1';
+				else
+					ptemp.code[2]='0';
+
+				if (p.x<=150)
+					ptemp.code[3]='1';
+				else
+					ptemp.code[3]='0';
+
+				ptemp.x=p.x;
+				ptemp.y=p.y;
+				return(ptemp);
+			}
+
+			int visibility (PT p1,PT p2) {
+				int i, flag = 0;
+				for(i = 0; i < 4; i++) {
+					if((p1.code[i] != '0') || (p2.code[i] != '0'))
+						flag = 1;
+				}
+				
+				if(flag == 0)
+					return(0);
+				for(i = 0; i < 4; i++) {
+					if((p1.code[i] == p2.code[i]) && (p1.code[i] == '1'))
+						flag=0;
+				}
+				if(flag == 0)
+					return(1);
+				return(2);
+			}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+27. Write a Program to implement Sutherland-Hodgeman Polygon clipping algorithm.
+
+			#include <stdio.h>
+			#include <graphics.h>
+
+			typedef struct {
+				int x, y;
+			} Point;
+			// Enter the minimum and maximum coordinates of the clipping window (x1 y1 x2 y2): 150 150 300 300
+			// Enter the number of vertices of the subject polygon: 5
+			// Enter the coordinates of the subject polygon vertices:
+			// Vertex 1: 150 150
+			// Vertex 2: 200 100
+			// Vertex 3: 250 150
+			// Vertex 4: 250 200
+			// Vertex 5: 200 250
+
+			// Function to find intersection point of a line with a clip boundary
+			Point intersect(Point p1, Point p2, int x1, int y1, int x2, int y2) {
+				Point intersect_point;
+				float m = (float)(p2.y - p1.y) / (p2.x - p1.x);
+				float b = p1.y - m * p1.x;
+
+				// If line is parallel to boundary, return original point
+				if (x1 == x2) {
+					intersect_point.x = x1;
+					intersect_point.y = m * x1 + b;
+				} else {
+					float x = (float)(y1 - b) / m;
+					intersect_point.x = x;
+					intersect_point.y = y1;
+				}
+				return intersect_point;
+			}
+
+			// Function to perform polygon clipping
+			void sutherlandHodgman(Point subject[], int n, Point clipper[]) {
+				Point result[20];
+				int k = 0;
+				int next, i;
+
+				for (i = 0; i < n; i++) {
+					Point current = subject[i];
+					Point prev = subject[(i + n - 1) % n];
+
+					if ((current.x >= clipper[0].x && current.x <= clipper[2].x) &&
+						(current.y >= clipper[0].y && current.y <= clipper[2].y)) {
+						if ((prev.x >= clipper[0].x && prev.x <= clipper[2].x) &&
+							(prev.y >= clipper[0].y && prev.y <= clipper[2].y)) {
+							result[k++] = current;
+						} else {
+							result[k++] = intersect(prev, current, clipper[0].x, clipper[0].y, clipper[1].x, clipper[1].y);
+							result[k++] = current;
+						}
+					} else if ((prev.x >= clipper[0].x && prev.x <= clipper[2].x) &&
+							   (prev.y >= clipper[0].y && prev.y <= clipper[2].y)) {
+						result[k++] = intersect(prev, current, clipper[0].x, clipper[0].y, clipper[1].x, clipper[1].y);
+					}
+				}
+
+				cleardevice();
+				setcolor(RED);
+				rectangle(clipper[0].x, clipper[0].y, clipper[2].x, clipper[2].y);
+
+				setcolor(WHITE);
+				for (i = 0; i < k; i++) {
+					next = (i + 1) % k;
+					line(result[i].x, result[i].y, result[next].x, result[next].y);
+				}
+			}
+
+			int main() {
+				int gd = DETECT, gm;
+				int x1, y1, x2, y2;
+				int n, i;
+				Point subject[20];
+				Point clipper[4];
+
+				initgraph(&gd, &gm, "C:\\TURBOC3\\BGI");
+
+				printf("Enter the minimum and maximum coordinates of the clipping window (x1 y1 x2 y2): ");
+				scanf("%d %d %d %d", &x1, &y1, &x2, &y2);
+
+				printf("Enter the number of vertices of the subject polygon: ");
+				scanf("%d", &n);
+
+				printf("Enter the coordinates of the subject polygon vertices:\n");
+				for (i = 0; i < n; i++) {
+					printf("Vertex %d: ", i + 1);
+					scanf("%d %d", &subject[i].x, &subject[i].y);
+				}
+
+			// Initialize clipper array
+			clipper[0].x = x1;
+			clipper[0].y = y1;
+			clipper[1].x = x2;
+			clipper[1].y = y1;
+			clipper[2].x = x2;
+			clipper[2].y = y2;
+			clipper[3].x = x1;
+			clipper[3].y = y2;
+
+
+				sutherlandHodgman(subject, n, clipper);
+
+				getch();
+				closegraph();
+				return 0;
+			}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+28. Write a Program to implement Generalized Polygon clipping algorithm.
+
+			#include <graphics.h>
+			#include <stdlib.h>
+			#include <stdio.h>
+			#include <math.h>
+
+			#define round(a) ((int)(a + 0.5))
+			// Enter the minimum and maximum coordinates of the clipping window (x1 y1 x2 y2): 150 150 300 300
+			// Enter the number of vertices of the subject polygon: 5
+			// Enter the coordinates of the subject polygon vertices:
+			// Vertex 1: 150 150
+			// Vertex 2: 200 100
+			// Vertex 3: 250 150
+			// Vertex 4: 250 200
+			// Vertex 5: 200 250
+			int k;
+			float xmin, ymin, xmax, ymax, arr[20], m;
+
+			void clipl(float x1, float y1, float x2, float y2) {
+			   if(x2 - x1)
+				  m = (y2 - y1) / (x2 - x1);
+			   else
+				  m = 100000;
+
+			   if(x1 >= xmin && x2 >= xmin) {
+				  arr[k]=x2;
+				  arr[k+1]=y2;
+				  k += 2;
+			   }
+
+			   if(x1 < xmin && x2 >= xmin) {
+				  arr[k]=xmin;
+				  arr[k+1]=y1+m*(xmin-x1);
+				  arr[k+2]=x2;
+				  arr[k+3]=y2;
+				  k+=4;
+			   }
+
+			   if(x1 >= xmin  && x2 < xmin) {
+				  arr[k]=xmin;
+				  arr[k+1]=y1+m*(xmin-x1);
+				  k+=2;
+			   }
+			}
+
+			void clipt(float x1,float y1,float x2,float y2) {
+				if(y2-y1)
+					m=(x2-x1)/(y2-y1);
+				else
+					m=100000;
+
+				if(y1 <= ymax && y2 <= ymax) {
+					arr[k]=x2;
+					arr[k+1]=y2;
+					k+=2;
+				}
+
+				if(y1 > ymax && y2 <= ymax) {
+					arr[k]=x1+m*(ymax-y1);
+					arr[k+1]=ymax;
+					arr[k+2]=x2;
+					arr[k+3]=y2;
+					k+=4;
+				}
+
+				if(y1 <= ymax  && y2 > ymax) {
+					arr[k]=x1+m*(ymax-y1);
+					arr[k+1]=ymax;
+					k+=2;
+				}
+			}
+
+			void clipr(float x1,float y1,float x2,float y2) {
+				if(x2-x1)
+					m=(y2-y1)/(x2-x1);
+				else
+					m=100000;
+
+				if(x1 <= xmax && x2 <= xmax) {
+					arr[k]=x2;
+					arr[k+1]=y2;
+					k+=2;
+				}
+
+				if(x1 > xmax && x2 <= xmax) {
+					arr[k]=xmax;
+					arr[k+1]=y1+m*(xmax-x1);
+					arr[k+2]=x2;
+					arr[k+3]=y2;
+					k+=4;
+				}
+
+				if(x1 <= xmax  && x2 > xmax) {
+					arr[k]=xmax;
+					arr[k+1]=y1+m*(xmax-x1);
+					k+=2;
+				}
+			}
+
+			void clipb(float x1,float y1,float x2,float y2) {
+				if(y2-y1)
+					m=(x2-x1)/(y2-y1);
+				else
+					m=100000;
+
+				if(y1 >= ymin && y2 >= ymin) {
+					arr[k]=x2;
+					arr[k+1]=y2;
+					k+=2;
+				}
+
+				if(y1 < ymin && y2 >= ymin) {
+					arr[k]=x1+m*(ymin-y1);
+					arr[k+1]=ymin;
+					arr[k+2]=x2;
+					arr[k+3]=y2;
+					k+=4;
+				}
+
+				if(y1 >= ymin  && y2 < ymin) {
+					arr[k]=x1+m*(ymin-y1);
+					arr[k+1]=ymin;
+					k+=2;
+				}
+			}
+
+			int main() {
+				int gdriver = DETECT, gmode, n, poly[20], i;
+				float xi, yi, xf, yf, polyy[20];
+
+				printf("Coordinates of rectangular clip window :\nxmin, ymin: ");
+				scanf("%f %f", &xmin, &ymin);
+				printf("xmax, ymax: ");
+				scanf("%f %f", &xmax, &ymax);
+				printf("\n\nPolygon to be clipped :\nNumber of sides: ");
+				scanf("%d", &n);
+				printf("Enter the coordinates: ");
+				for(i = 0; i < 2 * n; i++) {
+					scanf("%f", &polyy[i]);
+				}
+
+				polyy[i] = polyy[0];
+				polyy[i+1] = polyy[1];
+
+				for(i = 0; i < 2 * n + 2; i++)
+					poly[i] = round(polyy[i]);
+
+				initgraph(&gdriver, &gmode, "C:\\TurboC3\\BGI");
+
+				setcolor(RED);
+			   
+				rectangle(round(xmin), round(ymax), round(xmax), round(ymin));
+				outtextxy(200, 50, "UNCLIPPED POLYGON");
+				setcolor(WHITE);
+				fillpoly(n, poly);
+				getch();
+				cleardevice();
+
+				k = 0;
+				for(i = 0; i < 2 * n; i += 2)
+					clipl(polyy[i], polyy[i+1], polyy[i+2], polyy[i+3]);
+				n = k / 2;
+				for(i = 0; i < k; i++)
+					polyy[i] = arr[i];
+				polyy[i] = polyy[0];
+				polyy[i+1] = polyy[1];
+
+				k = 0;
+				for(i = 0; i < 2 * n; i += 2)
+					clipt(polyy[i], polyy[i+1], polyy[i+2], polyy[i+3]);
+				n = k / 2;
+				for(i = 0; i < k; i++)
+					polyy[i] = arr[i];
+				polyy[i] = polyy[0];
+				polyy[i+1] = polyy[1];
+
+				k = 0;
+				for(i = 0; i < 2 * n; i += 2)
+					clipr(polyy[i], polyy[i+1], polyy[i+2], polyy[i+3]);
+				n = k / 2;
+				for(i = 0; i < k; i++)
+					polyy[i] = arr[i];
+				polyy[i] = polyy[0];
+				polyy[i+1] = polyy[1];
+
+				k = 0;
+				for(i = 0; i < 2 * n; i += 2)
+					clipb(polyy[i], polyy[i+1], polyy[i+2], polyy[i+3]);
+				for(i = 0; i < k; i++)
+					poly[i] = round(arr[i]);
+				if(k)
+					fillpoly(k/2, poly);
+				setcolor(RED);
+				rectangle(round(xmin), round(ymax), round(xmax), round(ymin));
+				outtextxy(200, 50, "CLIPPED POLYGON");
+
+				getch();
+				closegraph();
+				return 0;
+			}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+29. Write a Program to draw a Koch curve upto ‘n’ iterations
+
+			#include <graphics.h>
+			#include <math.h>
+
+			void drawKochCurve(int order, int x1, int y1, int x2, int y2) {
+				if (order == 0) {
+					// Base case: Draw a line segment
+					line(x1, y1, x2, y2);
+				} else {
+					// Calculate new points dividing the segment into three equal parts
+					int deltaX = x2 - x1;
+					int deltaY = y2 - y1;
+
+					int x3 = x1 + deltaX / 3;
+					int y3 = y1 + deltaY / 3;
+
+					int x4 = (int)(0.5 * (x1 + x2) + sqrt(3.0) * (y1 - y2) / 6);
+					int y4 = (int)(0.5 * (y1 + y2) + sqrt(3.0) * (x2 - x1) / 6);
+
+					int x5 = x1 + 2 * deltaX / 3;
+					int y5 = y1 + 2 * deltaY / 3;
+
+					// Recursive calls for the segments between the points
+					drawKochCurve(order - 1, x1, y1, x3, y3);
+					drawKochCurve(order - 1, x3, y3, x4, y4);
+				drawKochCurve(order - 1, x4, y4, x5, y5);
+				drawKochCurve(order - 1, x5, y5, x2, y2);
+				}
+			}
+
+			int main() {
+				int gd = DETECT, gm;
+				int order;
+
+				// Let's assume a fixed starting and ending points for simplicity
+				int startX = 100, startY = 300;
+				int endX = 500, endY = 300;
+
+				initgraph(&gd, &gm, "C:\\TurboC3\\BGI");
+
+
+				printf("Enter the order of Koch Curve: ");
+				scanf("%d", &order);
+
+
+
+				drawKochCurve(order, startX, startY, endX, endY);
+
+				delay(5000);
+				closegraph();
+				return 0;
+			}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+30. Write a Program to draw a Hilbert curve upto ‘n’ iterations.
+
+			#include <graphics.h>
+			#include <stdio.h>
+
+			// Function to move the pen to the next point
+			void move(int j, int h, int *x, int *y) {
+				if (j == 1)
+					*y -= h;
+				else if (j == 2)
+					*x += h;
+				else if (j == 3)
+					*y += h;
+				else if (j == 4)
+					*x -= h;
+				lineto(*x, *y);
+			}
+
+			// Function to draw the Hilbert curve
+			void hilbert(int r, int d, int l, int u, int i, int h, int *x, int *y) {
+				if (i > 0) {
+					i--;
+					hilbert(d, r, u, l, i, h, x, y);
+					move(r, h, x, y);
+				hilbert(r, d, l, u, i, h, x, y);
+				move(d, h, x, y);
+				hilbert(r, d, l, u, i, h, x, y);
+				move(l, h, x, y);
+				hilbert(u, l, d, r, i, h, x, y);
+				}
+			}
+
+			int main() {
+				int gd = DETECT, gm;
+				int n, x1, y1;
+				int x0 = 50, y0 = 150, x, y, h = 10;
+				int r = 2, d = 3, l = 4, u = 1;
+
+				printf("Give the value of n: ");
+				scanf("%d", &n);
+
+				x = x0;
+				y = y0;
+
+
+					initgraph(&gd, &gm, "C:\\TurboC3\\BGI");
+
+				moveto(x, y);
+				hilbert(r, d, l, u, n, h, &x, &y);
+
+				delay(10000);
+				closegraph();
+
+				return 0;
+			}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+31. Write a Program to draw a Bezier curve upto ‘n’ iterations using midpoint method.
+
+			#include <graphics.h>
+			#include <math.h>
+			#include <stdio.h>
+
+			void bezierCurve(int x[4], int y[4]) {
+				double t;
+				for (t = 0.0; t <= 1.0; t += 0.0005) {
+					double xt = pow(1 - t, 3) * x[0] + 3 * t * pow(1 - t, 2) * x[1] + 3 * pow(t, 2) * (1 - t) * x[2] + pow(t, 3) * x[3];
+					double yt = pow(1 - t, 3) * y[0] + 3 * t * pow(1 - t, 2) * y[1] + 3 * pow(t, 2) * (1 - t) * y[2] + pow(t, 3) * y[3];
+					putpixel(xt, yt, WHITE);
+				}
+			}
+
+			int main() {
+				int gd = DETECT, gm;
+				int x[4], y[4];
+				initgraph(&gd, &gm, "C:\\TurboC3\\BGI");
+
+
+				printf("Enter the coordinates of the four control points (x1, y1, x2, y2, x3, y3, x4, y4): ");
+				scanf("%d %d %d %d %d %d %d %d", &x[0], &y[0], &x[1], &y[1], &x[2], &y[2], &x[3], &y[3]);
+
+				bezierCurve(x, y);
+
+				getch();
+				closegraph();
+				return 0;
+			} // 100 100 150 200 250 200 300 100
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+32. Write a Program to draw a coastline using Fractal line upto ‘n’ iterations.
+
+			#include <stdio.h>
+			#include <stdlib.h>
+			#include <graphics.h>
+
+			void drawFractalLine(int x1, int y1, int x2, int y2, int n) {
+				if (n == 0) {
+					line(x1, y1, x2, y2);
+				} else {
+					int mid_x = (x1 + x2) / 2;
+					int mid_y = (y1 + y2) / 2;
+					int offset = rand() % 51 - 25; // Random offset for variation
+
+					mid_y += offset;
+
+					drawFractalLine(x1, y1, mid_x, mid_y, n - 1);
+					drawFractalLine(mid_x, mid_y, x2, y2, n - 1);
+				}
+			}
+
+			int main() {
+				int gd = DETECT, gm;
+				
+				int n = 5; // Number of iterations
+				int x1 = 50, y1 = 300, x2 = 550, y2 = 300; // Initial line coordinates
+				initgraph(&gd, &gm, "C:\\TurboC3\\BGI");
+
+
+				drawFractalLine(x1, y1, x2, y2, n);
+
+				getch();
+				closegraph();
+				return 0;
+			}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+33. Write a Program to draw a mountain using Fractal surface upto ‘n’ iterations.
+
+			#include <stdio.h>
+			#include <graphics.h>
+			#include <stdlib.h>
+			#include <time.h>
+
+			// Function to generate random values within a range
+			int randomRange(int min, int max)
+			{
+				return min + rand() % (max - min + 1);
+			}
+
+			// Function to draw a fractal mountain
+			void drawMountain(int x1, int y1, int x2, int y2, int n, int h)
+			{
+				int xm, ym, offset;
+				if (n == 0)
+				{
+					line(x1, y1, x2, y2);
+				}
+				else
+				{
+					xm = (x1 + x2) / 2;
+					ym = (y1 + y2) / 2;
+
+					offset = randomRange(-h, h);
+					ym += offset;
+
+					drawMountain(x1, y1, xm, ym, n - 1, h / 2);
+					drawMountain(xm, ym, x2, y2, n - 1, h / 2);
+				}
+			}
+			//Mountain Fractal pt 2
+			int main()
+			{
+				int gd, gm, x1, y1, x2, y2, h, n;
+				gd = DETECT;
+				initgraph(&gd, &gm, "C:\\TurboC3\\BGI");
+
+				printf("Enter the number of iterations: ");
+				scanf("%d", &n);
+
+				srand(time(NULL));
+
+				x1 = 0;
+				y1 = getmaxy() / 2;
+				x2 = getmaxx();
+				y2 = getmaxy() / 2;
+				h = getmaxy() / 3;
+
+				drawMountain(x1, y1, x2, y2, n, h);
+
+				delay(5000);
+				closegraph();
+
+				return 0;
+			}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+34. Write a program to achieve various animations without using any readymade line or
+circle function. Use DDA or Bresenham algorithm for implementation of line and
+circle. ( for sample animations refer attached sheet).
+Sanjesh S. Pawale
+
+

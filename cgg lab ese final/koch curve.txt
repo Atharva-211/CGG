@@ -1,0 +1,47 @@
+#include <graphics.h>
+#include <math.h>
+
+void drawKochCurve(int order, int x1, int y1, int x2, int y2) {
+    if (order == 0) {
+        // Base case: Draw a line segment
+        line(x1, y1, x2, y2);
+    } else {
+        // Calculate new points dividing the segment into three equal parts
+        int deltaX = x2 - x1;
+        int deltaY = y2 - y1;
+
+        int x3 = x1 + deltaX / 3;
+        int y3 = y1 + deltaY / 3;
+
+        int x4 = (int)(0.5 * (x1 + x2) + sqrt(3.0) * (y1 - y2) / 6);
+        int y4 = (int)(0.5 * (y1 + y2) + sqrt(3.0) * (x2 - x1) / 6);
+
+        int x5 = x1 + 2 * deltaX / 3;
+        int y5 = y1 + 2 * deltaY / 3;
+
+        // Recursive calls for the segments between the points
+        drawKochCurve(order - 1, x1, y1, x3, y3);
+        drawKochCurve(order - 1, x3, y3, x4, y4);
+        drawKochCurve(order - 1, x4, y4, x5, y5);
+        drawKochCurve(order - 1, x5, y5, x2, y2);
+    }
+}
+
+int main() {
+    int gd = DETECT, gm;
+    initgraph(&gd, &gm, "");
+
+    int order;
+    printf("Enter the order of Koch Curve: ");
+    scanf("%d", &order);
+
+    // Let's assume a fixed starting and ending points for simplicity
+    int startX = 100, startY = 300;
+    int endX = 500, endY = 300;
+
+    drawKochCurve(order, startX, startY, endX, endY);
+
+    delay(5000);
+    closegraph();
+    return 0;
+}

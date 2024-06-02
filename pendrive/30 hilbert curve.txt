@@ -1,0 +1,39 @@
+#include <graphics.h>
+#include <stdio.h>
+
+void drawHilbertCurve(int order, int x, int y, int length, char direction) {
+    if (order <= 0)
+        return;
+
+    length /= 2;
+
+    drawHilbertCurve(order - 1, x, y - length, length, 'L');
+    line(x, y, x, y - length);
+    
+    drawHilbertCurve(order - 1, x + length, y, length, 'U');
+    line(x, y, x + length, y);
+    
+    drawHilbertCurve(order - 1, x, y + length, length, 'R');
+    line(x + length, y, x + length, y + length);
+    
+    drawHilbertCurve(order - 1, x - length, y, length, 'D');
+    line(x, y + length, x - length, y + length);
+}
+
+int main() {
+    int gd = DETECT, gm;
+    initgraph(&gd, &gm, "");
+    
+    int order, length;
+    printf("Enter the order of Hilbert Curve: ");
+    scanf("%d", &order);
+    printf("Enter the length of each line segment: ");
+    scanf("%d", &length);
+    
+    int startX = 100, startY = 100;
+    drawHilbertCurve(order, startX, startY, length, 'U');
+
+    delay(5000);
+    closegraph();
+    return 0;
+}

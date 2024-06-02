@@ -1,0 +1,46 @@
+#include <graphics.h>  // Include the graphics library
+#include <math.h>
+
+// Function to draw a circle using Bresenham's circle drawing algorithm
+void drawCircleBresenham(int xc, int yc, int r) {
+    int x = 0, y = r;
+    int d = 3 - 2 * r;
+
+    while (x <= y) {
+        putpixel(xc + x, yc + y, WHITE);
+        putpixel(xc - x, yc + y, WHITE);
+        putpixel(xc + x, yc - y, WHITE);
+        putpixel(xc - x, yc - y, WHITE);
+        putpixel(xc + y, yc + x, WHITE);
+        putpixel(xc - y, yc + x, WHITE);
+        putpixel(xc + y, yc - x, WHITE);
+        putpixel(xc - y, yc - x, WHITE);
+
+        if (d < 0)
+            d += 4 * x + 6;
+        else {
+            d += 4 * (x - y) + 10;
+            y--;
+        }
+        x++;
+    }
+}
+
+int main() {
+    // Initialize the graphics mode and driver
+    int gd = DETECT, gm;
+    initgraph(&gd, &gm, "");  // Adjust the path according to your setup
+
+    // Set the color of the circle
+    setcolor(WHITE);
+
+    // Draw a circle at center (200, 200) with radius 100 using Bresenham's circle drawing algorithm
+    drawCircleBresenham(200, 200, 100);
+
+    // Wait for the user to press a key
+    getch();
+
+    // Close the graphics mode and clean up
+    closegraph();
+    return 0;
+}

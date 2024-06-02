@@ -1,0 +1,91 @@
+#include <graphics.h>
+#include <stdio.h>
+
+// Function to draw a triangle
+void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, int color) {
+    setcolor(color);
+    line(x1, y1, x2, y2);
+    line(x2, y2, x3, y3);
+    line(x3, y3, x1, y1);
+}
+
+// Function to reflect a point about the X-axis
+void reflectAboutXAxis(int &x, int &y, int height) {
+    y = height - y;
+}
+
+// Function to reflect a point about the Y-axis
+void reflectAboutYAxis(int &x, int &y, int width) {
+    x = width - x;
+}
+
+// Function to reflect a point about the origin (both axes)
+void reflectAboutOrigin(int &x, int &y, int width, int height) {
+    x = width - x;
+    y = height - y;
+}
+
+int main() {
+    int gd = DETECT, gm;
+    initgraph(&gd, &gm, NULL);
+
+    // Set the viewport to 600x480
+    int width = 600, height = 480;
+    setviewport(0, 0, width, height, 1);
+
+    // Original triangle vertices
+    int x1 = 100, y1 = 100;
+    int x2 = 200, y2 = 100;
+    int x3 = 150, y3 = 200;
+
+    // Draw original triangle
+    drawTriangle(x1, y1, x2, y2, x3, y3, WHITE);
+    delay(1000); // Delay to show the original triangle
+
+    // Reflection about the X-axis
+    int x1_xaxis = x1, y1_xaxis = y1;
+    int x2_xaxis = x2, y2_xaxis = y2;
+    int x3_xaxis = x3, y3_xaxis = y3;
+
+    reflectAboutXAxis(x1_xaxis, y1_xaxis, height);
+    reflectAboutXAxis(x2_xaxis, y2_xaxis, height);
+    reflectAboutXAxis(x3_xaxis, y3_xaxis, height);
+
+    // Draw triangle after reflection about X-axis (RED)
+    drawTriangle(x1_xaxis, y1_xaxis, x2_xaxis, y2_xaxis, x3_xaxis, y3_xaxis, RED);
+    delay(1000); // Delay to show the reflection about X-axis
+
+    // Reflection about the Y-axis
+    int x1_yaxis = x1, y1_yaxis = y1;
+    int x2_yaxis = x2, y2_yaxis = y2;
+    int x3_yaxis = x3, y3_yaxis = y3;
+
+    reflectAboutYAxis(x1_yaxis, y1_yaxis, width);
+    reflectAboutYAxis(x2_yaxis, y2_yaxis, width);
+    reflectAboutYAxis(x3_yaxis, y3_yaxis, width);
+
+    // Draw triangle after reflection about Y-axis (GREEN)
+    drawTriangle(x1_yaxis, y1_yaxis, x2_yaxis, y2_yaxis, x3_yaxis, y3_yaxis, GREEN);
+    delay(1000); // Delay to show the reflection about Y-axis
+
+    // Reflection about the origin (both axes)
+    int x1_origin = x1, y1_origin = y1;
+    int x2_origin = x2, y2_origin = y2;
+    int x3_origin = x3, y3_origin = y3;
+
+    reflectAboutOrigin(x1_origin, y1_origin, width, height);
+    reflectAboutOrigin(x2_origin, y2_origin, width, height);
+    reflectAboutOrigin(x3_origin, y3_origin, width, height);
+
+    // Draw triangle after reflection about the origin (CYAN)
+    drawTriangle(x1_origin, y1_origin, x2_origin, y2_origin, x3_origin, y3_origin, CYAN);
+    delay(1000); // Delay to show the reflection about the origin
+
+    // Wait for a key press
+    getch();
+
+    // Close the graphics mode
+    closegraph();
+
+    return 0;
+}

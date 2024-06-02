@@ -1,0 +1,86 @@
+#include <graphics.h>
+#include <conio.h>
+#include <math.h>
+
+// Function to draw a triangle
+void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3) {
+    line(x1, y1, x2, y2);
+    line(x2, y2, x3, y3);
+    line(x3, y3, x1, y1);
+}
+
+// Function to rotate a triangle
+void rotateTriangle(int &x1, int &y1, int &x2, int &y2, int &x3, int &y3, float angle) {
+    float rad = angle * (M_PI / 180.0); // Convert angle to radians
+    int tempX1 = x1, tempY1 = y1;
+    int tempX2 = x2, tempY2 = y2;
+    int tempX3 = x3, tempY3 = y3;
+
+    x1 = tempX1 * cos(rad) - tempY1 * sin(rad);
+    y1 = tempX1 * sin(rad) + tempY1 * cos(rad);
+    x2 = tempX2 * cos(rad) - tempY2 * sin(rad);
+    y2 = tempX2 * sin(rad) + tempY2 * cos(rad);
+    x3 = tempX3 * cos(rad) - tempY3 * sin(rad);
+    y3 = tempX3 * sin(rad) + tempY3 * cos(rad);
+}
+
+// Function to translate a triangle
+void translateTriangle(int &x1, int &y1, int &x2, int &y2, int &x3, int &y3, int tx, int ty) {
+    x1 = x1 + tx;
+    y1 = y1 + ty;
+    x2 = x2 + tx;
+    y2 = y2 + ty;
+    x3 = x3 + tx;
+    y3 = y3 + ty;
+}
+
+int main() {
+    int gd = DETECT, gm;
+    initgraph(&gd, &gm, "C:\\TurboC3\\BGI");
+
+    // Original triangle coordinates
+    int x1 = 100, y1 = 200;
+    int x2 = 200, y2 = 100;
+    int x3 = 300, y3 = 200;
+
+    // Draw the original triangle
+    setcolor(WHITE);
+    drawTriangle(x1, y1, x2, y2, x3, y3);
+    outtextxy(50, 50, "Original Triangle");
+
+    // Rotation angle
+    float angle = 45; // in degrees
+
+    // Rotate the triangle
+    int rotatedX1 = x1, rotatedY1 = y1;
+    int rotatedX2 = x2, rotatedY2 = y2;
+    int rotatedX3 = x3, rotatedY3 = y3;
+    rotateTriangle(rotatedX1, rotatedY1, rotatedX2, rotatedY2, rotatedX3, rotatedY3, angle);
+
+    // Draw the rotated triangle
+    setcolor(GREEN);
+    drawTriangle(rotatedX1, rotatedY1, rotatedX2, rotatedY2, rotatedX3, rotatedY3);
+    outtextxy(50, 70, "Rotated Triangle");
+
+    // Translation values
+    int tx = 50, ty = 50;
+
+    // Translate the original triangle
+    int translatedX1 = x1, translatedY1 = y1;
+    int translatedX2 = x2, translatedY2 = y2;
+    int translatedX3 = x3, translatedY3 = y3;
+    translateTriangle(translatedX1, translatedY1, translatedX2, translatedY2, translatedX3, translatedY3, tx, ty);
+
+    // Draw the translated triangle
+    setcolor(RED);
+    drawTriangle(translatedX1, translatedY1, translatedX2, translatedY2, translatedX3, translatedY3);
+    outtextxy(50, 90, "Translated Triangle");
+
+    // Wait for a key press
+    getch();
+
+    // Close the graphics mode
+    closegraph();
+
+    return 0;
+}
